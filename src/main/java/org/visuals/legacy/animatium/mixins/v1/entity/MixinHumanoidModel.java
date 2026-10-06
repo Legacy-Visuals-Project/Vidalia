@@ -109,7 +109,7 @@ public abstract class MixinHumanoidModel<T extends HumanoidRenderState> extends 
         }
     }
 
-    @WrapOperation(method = "poseBlockingArm", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(FFF)F"))
+    @WrapOperation(method = "poseBlockingArm", at = @At(value = "INVOKE", target = "Ljava/lang/Math;clamp(FFF)F"))
     private float animatium$lockBlockingArmRotation(final float value, final float min, final float max, final Operation<Float> original) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().other.lockBlockingArmRotation) {
             return 0.0F;

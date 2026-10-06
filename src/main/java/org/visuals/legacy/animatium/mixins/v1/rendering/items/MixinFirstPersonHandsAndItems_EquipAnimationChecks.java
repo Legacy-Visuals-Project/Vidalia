@@ -68,7 +68,7 @@ public abstract class MixinFirstPersonHandsAndItems_EquipAnimationChecks {
     }
 
     // Fixes MC-262560
-    @ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(FFF)F", ordinal = 2), index = 0)
+    @ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Ljava/lang/Math;clamp(FFF)F", ordinal = 2), index = 0)
     private float animatium$handleEquipLogic(final float value, @Local(argsOnly = true, name = "player") final LocalPlayer player, @Local(name = "attackAnim") float attackAnim) {
         final EquipAnimationVersionSetting setting = AnimatiumConfig.instance().items.equipAnimationVersion;
         if (Animatium.isEnabled() && setting != EquipAnimationVersionSetting.VANILLA && player != null) {

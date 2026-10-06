@@ -18,12 +18,18 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.LoadingOverlay;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureResources;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ReloadInstance;
+import net.minecraft.server.packs.resources.ResourceProvider;
 import net.minecraft.util.ARGB;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,8 +40,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
-import org.visuals.legacy.animatium.handler.rendering.LegacyLogoTexture;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.function.IntSupplier;
 
 @Mixin(LoadingOverlay.class)
@@ -49,7 +56,12 @@ public abstract class MixinLoadingOverlay_LegacyLoadingScreen {
 
     @Inject(method = "registerTextures", at = @At("TAIL"))
     private static void animatium$loadTextures(final TextureManager textureManager, final CallbackInfo ci) {
-        textureManager.registerAndLoad(animatium$MOJANG_LOGO, new LegacyLogoTexture(animatium$MOJANG_LOGO));
+        final ResourceProvider provider = Minecraft.getInstance().getResourceManager();
+        try (final InputStream resource = provider.open(animatium$MOJANG_LOGO); final NativeImage image = NativeImage.read(resource)) {
+            textureManager.register(animatium$MOJANG_LOGO, TextureResources.from2dImage(() -> "Legacy Mojang Logo", image, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST)));
+        } catch (final IOException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Ljava/util/function/IntSupplier;getAsInt()I"))

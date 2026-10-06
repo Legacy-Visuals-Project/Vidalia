@@ -29,7 +29,7 @@ fun ClientLevel.hasVoidFog(): Boolean {
 
 fun ClientLevel.getLegacySkyDarken(): Float {
     var value = 1.0F - (Mth.cos((this.getTimeOfDay(1.0F) * (Math.PI * 2).toFloat()).toDouble()) * 2.0F + 0.2F)
-    value = Mth.clamp(value, 0.0F, 1.0F)
+    value = Math.clamp(value, 0.0F, 1.0F)
     value = 1.0F - value
     value *= 1.0F - this.getRainLevel(1.0F) * 5.0F / 16.0F
     value *= 1.0F - this.getThunderLevel(1.0F) * 5.0F / 16.0F

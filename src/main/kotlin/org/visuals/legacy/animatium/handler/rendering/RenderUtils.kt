@@ -14,6 +14,7 @@
 
 package org.visuals.legacy.animatium.handler.rendering
 
+import com.mojang.blaze3d.platform.NativeImage
 import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.renderpearl.api.textures.GpuTexture
 import net.minecraft.client.Minecraft
@@ -97,17 +98,18 @@ fun resetOverlayTexture() {
 
 fun setOverlayColor(color: Int) {
     val overlayTexture = Minecraft.getInstance().gameRenderer.overlayTexture()
-    val dynamicTexture = (overlayTexture as OverlayTextureAccessor).`animatium$getDynamicTexture`()
-    val pixels = dynamicTexture.pixels
-    for (y in 0..<16) {
-        for (x in 0..<16) {
-            if (y < 8) {
-                pixels.setPixel(x, y, color)
+    val textureView = (overlayTexture as OverlayTextureAccessor).`animatium$getTextureView`()
+    NativeImage(16, 16, false).use { pixels ->
+        for (y in 0..<16) {
+            for (x in 0..<16) {
+                if (y < 8) {
+                    pixels.setPixel(x, y, color)
+                }
             }
         }
-    }
 
-    dynamicTexture.upload()
+        pixels.writeToGpuTexture(RenderSystem.getDevice().createCommandEncoder(), textureView.texture())
+    }
 }
 
 fun updateOverlayTint(style: DamageTintSetting = AnimatiumConfig.instance().other.damageTintStyle) {

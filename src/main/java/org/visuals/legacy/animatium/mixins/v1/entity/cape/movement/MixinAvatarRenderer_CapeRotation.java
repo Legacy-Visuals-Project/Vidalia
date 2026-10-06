@@ -47,7 +47,7 @@ public abstract class MixinAvatarRenderer_CapeRotation<AvatarLikeEntity extends 
         }
     }
 
-    @ModifyArg(method = "extractCapeState", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(FFF)F", ordinal = 1), index = 2)
+    @ModifyArg(method = "extractCapeState", at = @At(value = "INVOKE", target = "Ljava/lang/Math;clamp(FFF)F", ordinal = 1), index = 2)
     private static float animatium$uncapRotation(final float original) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().movement.disableCapeLean) {
             return Float.MAX_VALUE;

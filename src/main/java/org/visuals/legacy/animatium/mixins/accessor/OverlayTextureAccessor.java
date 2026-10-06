@@ -14,13 +14,13 @@
 
 package org.visuals.legacy.animatium.mixins.accessor;
 
-import net.minecraft.client.renderer.texture.DynamicTexture;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(OverlayTexture.class)
 public interface OverlayTextureAccessor {
-    @Accessor("texture")
-    DynamicTexture animatium$getDynamicTexture();
+    @Accessor("textureView")
+    GpuTextureView animatium$getTextureView();
 }

@@ -24,7 +24,7 @@ data class TextureAndSampler(val textureView: GpuTextureView?, val sampler: GpuS
         @JvmStatic
         fun get(location: Identifier): TextureAndSampler {
             val texture = Minecraft.getInstance().textureManager.getTexture(location)
-            return TextureAndSampler(texture.getTextureView(), texture.getSampler())
+            return TextureAndSampler(texture.textureView(), texture.sampler())
         }
     }
 }

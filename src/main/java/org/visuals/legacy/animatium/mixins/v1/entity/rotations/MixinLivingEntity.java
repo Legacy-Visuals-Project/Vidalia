@@ -16,7 +16,6 @@ package org.visuals.legacy.animatium.mixins.v1.entity.rotations;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -49,7 +48,7 @@ public abstract class MixinLivingEntity extends Entity {
     @WrapOperation(method = "tickHeadTurn", at = @At(value = "INVOKE", target = "Ljava/lang/Math;abs(F)F"))
     private float animatium$backwardsWalkingHeadRotation(final float value, final Operation<Float> original) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().movement.rotateBackwardsWalking) {
-            final float rotation = Mth.clamp(value, -75.0F, 75.0F);
+            final float rotation = Math.clamp(value, -75.0F, 75.0F);
             this.yBodyRot = this.getYRot() - rotation;
             if (Math.abs(rotation) > 50.0F) {
                 this.yBodyRot += rotation * 0.2F;
