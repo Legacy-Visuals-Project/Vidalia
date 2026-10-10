@@ -14,6 +14,7 @@
 
 package org.visuals.legacy.animatium.mixins.v1.general.camera.view_bobbing;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -57,13 +58,12 @@ public abstract class MixinGameRenderer_ModifyViewBobbing {
         return !Animatium.isEnabled() || !AnimatiumConfig.instance().extras.minimalViewBobbing;
     }
 
-    @WrapOperation(method = "bobHurt", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/level/CameraEntityRenderState;hurtTime:F", opcode = Opcodes.GETFIELD))
-    private float animatium$offsetHurtTime(final CameraEntityRenderState instance, final Operation<Float> original) {
-        final float hurtTime = original.call(instance);
+    @ModifyExpressionValue(method = "bobHurt", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/state/level/CameraEntityRenderState;hurtTime:F", opcode = Opcodes.GETFIELD))
+    private float animatium$offsetHurtTime(final float original) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().movement.offsetHurtTiltTime) {
-            return Math.max(hurtTime - 1, 0);
+            return Math.max(original - 1.0F, 0.0F);
         } else {
-            return hurtTime;
+            return original;
         }
     }
 
