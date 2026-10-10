@@ -22,7 +22,6 @@ import org.visuals.legacy.animatium.handler.config.bundle.EntryBundle;
 import org.visuals.legacy.animatium.handler.config.category.Category;
 
 public final class FixesConfigCategory extends Category {
-    public boolean fixSneakingFeetPosition = true;
     public boolean fixMirrorArmSwing = true;
     public boolean fixOffHandUsingPose = true;
     public boolean fixCastLineCheck = true;
@@ -49,7 +48,6 @@ public final class FixesConfigCategory extends Category {
     public @NonNull EntryBundle bundle() {
         final EntryBundle bundle = new EntryBundle(this, "fixes");
 
-        bundle.booleanEntry("fixSneakingFeetPosition");
         bundle.booleanEntry("fixMirrorArmSwing");
         bundle.booleanEntry("fixOffHandUsingPose");
         bundle.booleanEntry("fixCastLineCheck");
