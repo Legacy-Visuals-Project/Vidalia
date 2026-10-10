@@ -38,7 +38,7 @@ public abstract class MixinAvatarRenderer_OffsetCheck<AvatarLikeEntity extends A
     }
 
     @ModifyExpressionValue(method = "getRenderOffset(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)Lnet/minecraft/world/phys/Vec3;", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;isCrouching:Z", opcode = Opcodes.GETFIELD))
-    private boolean animatium$onlyOffsetForOthers(final boolean original, @Local(argsOnly = true, ordinal = 0) final AvatarRenderState state) {
+    private boolean animatium$onlyOffsetForOthers(final boolean original, @Local(argsOnly = true, name = "state") final AvatarRenderState state) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().movement.sneakAnimation.ordinal() <= SneakAnimationSetting.V1_8.ordinal()) {
             return original && !EntityUtilKt.isSelf(state);
         } else {
