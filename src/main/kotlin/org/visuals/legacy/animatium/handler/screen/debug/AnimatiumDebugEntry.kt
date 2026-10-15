@@ -14,22 +14,18 @@
 
 package org.visuals.legacy.animatium.handler.screen.debug
 
-import net.minecraft.client.gui.components.debug.DebugEntryCategory
 import net.minecraft.client.gui.components.debug.DebugGroup
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.minecraft.network.chat.Component
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.chunk.LevelChunk
-import org.visuals.legacy.animatium.Animatium
 import org.visuals.legacy.animatium.AnimatiumConstants
 import org.visuals.legacy.animatium.handler.server_features.ServerFeatureManager
 import org.visuals.legacy.animatium.handler.server_features.ServerFeatures
 
 class AnimatiumDebugEntry : DebugScreenEntry {
     companion object {
-        val ID = Animatium.location("debug")
-        val CATEGORY = DebugEntryCategory(Component.translatable("animatium.category.debug"), Float.MAX_VALUE)
         val GROUP = DebugGroup.Builder.titled(Component.translatable("animatium.category.debug")).build()
     }
 
@@ -58,5 +54,5 @@ class AnimatiumDebugEntry : DebugScreenEntry {
 
     override fun isAllowed(reducedDebugInfo: Boolean) = true
 
-    override fun category() = CATEGORY
+    override fun category() = AnimatiumConstants.DEBUG_CATEGORY
 }
