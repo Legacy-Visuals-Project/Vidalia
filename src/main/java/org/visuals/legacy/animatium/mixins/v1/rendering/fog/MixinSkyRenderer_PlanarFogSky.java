@@ -29,8 +29,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
-import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines;
+import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline;
+import org.visuals.legacy.animatium.handler.compatibility.IrisUtil;
 import org.visuals.legacy.animatium.handler.rendering.LegacySkyRenderer;
+import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines;
 
 @Mixin(SkyRenderer.class)
 public abstract class MixinSkyRenderer_PlanarFogSky {
@@ -43,6 +45,9 @@ public abstract class MixinSkyRenderer_PlanarFogSky {
         LegacySkyRenderer.TOP_GEOMETRY.getVertexBuffer();
         LegacySkyRenderer.BOTTOM_GEOMETRY.getVertexBuffer();
         animatium$skyIndexBuffer = RenderSystem.getSequentialBuffer(VertexFormat.Mode.QUADS);
+
+        IrisUtil.assignPipeline(AnimatiumPipelines.LEGACY_SKY, IrisPipeline.SKY_BASIC);
+        IrisUtil.assignPipeline(AnimatiumPipelines.LEGACY_SKY_PLANAR_FOG, IrisPipeline.SKY_BASIC);
     }
 
     @WrapOperation(method = "renderSkyDisc", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setPipeline(Lcom/mojang/blaze3d/pipeline/RenderPipeline;)V"))
