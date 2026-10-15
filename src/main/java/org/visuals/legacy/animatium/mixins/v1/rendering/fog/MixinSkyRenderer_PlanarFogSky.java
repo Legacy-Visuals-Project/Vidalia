@@ -30,8 +30,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
+import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline;
+import org.visuals.legacy.animatium.handler.compatibility.IrisUtil;
 import org.visuals.legacy.animatium.handler.rendering.LegacySkyRenderer;
 import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines;
+import org.visuals.legacy.animatium.handler.rendering.pipeline.DepthPipelineSet;
 
 @Mixin(SkyRenderer.class)
 public abstract class MixinSkyRenderer_PlanarFogSky {
@@ -43,6 +46,14 @@ public abstract class MixinSkyRenderer_PlanarFogSky {
         // Load them before anything (Static Variables don't load until used, which would cause a issue in the RenderPass)
         LegacySkyRenderer.initialize();
         animatium$skyIndexBuffer = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
+
+        final DepthPipelineSet skySet = AnimatiumPipelines.LEGACY_SKY;
+        IrisUtil.assignPipeline(skySet.getDefaultPipeline(), IrisPipeline.SKY_BASIC);
+        IrisUtil.assignPipeline(skySet.getDepthPipeline(), IrisPipeline.SKY_BASIC);
+
+        final DepthPipelineSet planarSkySet = AnimatiumPipelines.LEGACY_SKY_PLANAR;
+        IrisUtil.assignPipeline(planarSkySet.getDefaultPipeline(), IrisPipeline.SKY_BASIC);
+        IrisUtil.assignPipeline(planarSkySet.getDepthPipeline(), IrisPipeline.SKY_BASIC);
     }
 
     @WrapOperation(method = "renderSkyDisc", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/RenderPass;setPipeline(Lcom/mojang/renderpearl/api/pipeline/CompiledRenderPipeline;)V"))
