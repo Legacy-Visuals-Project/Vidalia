@@ -29,6 +29,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
+import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline;
+import org.visuals.legacy.animatium.handler.compatibility.IrisUtil;
 import org.visuals.legacy.animatium.handler.rendering.LegacySkyRenderer;
 import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines;
 
@@ -42,6 +44,9 @@ public abstract class MixinSkyRenderer_PlanarFogSky {
         // Load them before anything (Static Variables don't load until used, which would cause a issue in the RenderPass)
         LegacySkyRenderer.initialize();
         animatium$skyIndexBuffer = RenderSystem.getSequentialBuffer(PrimitiveTopology.QUADS);
+
+        IrisUtil.assignPipeline(AnimatiumPipelines.LEGACY_SKY, IrisPipeline.SKY_BASIC);
+        IrisUtil.assignPipeline(AnimatiumPipelines.LEGACY_SKY_PLANAR_FOG, IrisPipeline.SKY_BASIC);
     }
 
     @WrapOperation(method = "renderSkyDisc", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/RenderPass;setPipeline(Lcom/mojang/renderpearl/api/pipeline/CompiledRenderPipeline;)V"))
