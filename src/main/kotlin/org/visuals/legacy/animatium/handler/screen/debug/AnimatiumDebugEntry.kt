@@ -20,12 +20,14 @@ import net.minecraft.client.gui.components.debug.DebugScreenEntry
 import net.minecraft.network.chat.Component
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.chunk.LevelChunk
+import org.visuals.legacy.animatium.Animatium
 import org.visuals.legacy.animatium.AnimatiumConstants
 import org.visuals.legacy.animatium.handler.server_features.ServerFeatureManager
 import org.visuals.legacy.animatium.handler.server_features.ServerFeatures
 
 class AnimatiumDebugEntry : DebugScreenEntry {
     companion object {
+        val ID = Animatium.location("debug")
         val GROUP = DebugGroup.Builder.titled(Component.translatable("animatium.category.debug")).build()
     }
 

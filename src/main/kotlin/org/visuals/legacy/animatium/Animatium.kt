@@ -69,7 +69,7 @@ object Animatium {
             LOGGER.error("Failed to load animatium utility config, defaulting...")
         }
 
-        DebugScreenEntries.register(AnimatiumDebugEntry.GROUP, AnimatiumDebugEntry())
-        DebugScreenEntries.register(AnimatiumDebugEntry.GROUP, AnimatiumEyeHeightDebugEntry())
+        DebugScreenEntries.register(AnimatiumDebugEntry.ID, AnimatiumDebugEntry())
+        DebugScreenEntries.register(AnimatiumEyeHeightDebugEntry.ID, AnimatiumEyeHeightDebugEntry())
     }
 }

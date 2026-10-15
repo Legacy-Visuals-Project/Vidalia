@@ -15,8 +15,10 @@
 package org.visuals.legacy.animatium.handler.screen.debug
 
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.components.debug.DebugGroup
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer
 import net.minecraft.client.gui.components.debug.DebugScreenEntry
+import net.minecraft.network.chat.Component
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.chunk.LevelChunk
 import org.visuals.legacy.animatium.Animatium
@@ -24,7 +26,8 @@ import org.visuals.legacy.animatium.AnimatiumConstants
 
 class AnimatiumEyeHeightDebugEntry : DebugScreenEntry {
     companion object {
-        val GROUP = Animatium.location("eye_height")
+        val ID = Animatium.location("eye_height")
+        val GROUP = DebugGroup.Builder.titled(Component.translatable("animatium.category.debug")).build()
     }
 
     override fun display(
