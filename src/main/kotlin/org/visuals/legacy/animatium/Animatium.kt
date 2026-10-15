@@ -24,6 +24,7 @@ import net.minecraft.resources.Identifier
 import org.visuals.legacy.animatium.config.AnimatiumConfig
 import org.visuals.legacy.animatium.handler.rendering.lighting.LegacyDiffuseLighting
 import org.visuals.legacy.animatium.handler.screen.debug.AnimatiumDebugEntry
+import org.visuals.legacy.animatium.handler.screen.debug.AnimatiumEyeHeightDebugEntry
 import org.visuals.legacy.animatium.util.ToastUtil
 import org.visuals.legacy.animatium.util.config.GeneralConfigUtil
 import org.visuals.legacy.animatium.util.reinitializeInventorySlots
@@ -69,5 +70,6 @@ object Animatium {
         }
 
         DebugScreenEntries.register(AnimatiumDebugEntry.GROUP, AnimatiumDebugEntry())
+        DebugScreenEntries.register(AnimatiumDebugEntry.GROUP, AnimatiumEyeHeightDebugEntry())
     }
 }

@@ -15,7 +15,9 @@
 package org.visuals.legacy.animatium
 
 import net.fabricmc.fabric.api.client.model.loading.v1.ExtraModelKey
+import net.minecraft.client.gui.components.debug.DebugEntryCategory
 import net.minecraft.client.renderer.block.model.BlockStateModel
+import net.minecraft.network.chat.Component
 import org.visuals.legacy.animatium.handler.networking.payloads.InfoPayload
 import org.visuals.legacy.animatium.util.version.Version
 import java.lang.Boolean.parseBoolean
@@ -41,4 +43,7 @@ object AnimatiumConstants {
     @JvmField
     val INFO_PAYLOAD =
         InfoPayload(VERSION, if (IS_DEVELOPMENT) Optional.of(DEVELOPMENT_VERSION) else Optional.empty())
+
+    @JvmField
+    val DEBUG_CATEGORY = DebugEntryCategory(Component.translatable("animatium.category.debug"), Float.MAX_VALUE)
 }
