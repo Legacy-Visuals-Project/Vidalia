@@ -40,6 +40,7 @@ object IrisUtil {
         }
     }
 
+    @JvmStatic
     fun assignPipeline(pipeline: RenderPipeline, program: IrisPipeline) {
         try {
             if (pipelineCache.containsKey(pipeline) && pipelineCache[pipeline] == program) {
