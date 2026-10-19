@@ -25,7 +25,6 @@ enum class PresetVersion(private val applier: Runnable) {
         // Values
         val movement = AnimatiumConfig.instance().movement
         movement.sneakAnimation = SneakAnimationSetting.V1_7
-        movement.longUnsneak = true
         movement.oldCapeMovement = true
         movement.disableCapeLean = false
         movement.disableCapeSwingRotation = true
@@ -125,7 +124,6 @@ enum class PresetVersion(private val applier: Runnable) {
         // Values
         val movement = AnimatiumConfig.instance().movement
         movement.sneakAnimation = SneakAnimationSetting.V1_8
-        movement.longUnsneak = false
         movement.oldCapeMovement = true
         movement.disableCapeLean = false
         movement.disableCapeSwingRotation = true
@@ -225,7 +223,6 @@ enum class PresetVersion(private val applier: Runnable) {
         // Values
         val movement = AnimatiumConfig.instance().movement
         movement.sneakAnimation = SneakAnimationSetting.VANILLA
-        movement.longUnsneak = false
         movement.oldCapeMovement = false
         movement.disableCapeLean = false
         movement.disableCapeSwingRotation = false
