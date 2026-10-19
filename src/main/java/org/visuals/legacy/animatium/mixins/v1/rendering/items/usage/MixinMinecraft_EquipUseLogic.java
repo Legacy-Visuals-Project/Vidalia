@@ -36,7 +36,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
@@ -66,16 +65,6 @@ public abstract class MixinMinecraft_EquipUseLogic {
     @Shadow
     @Nullable
     public MultiPlayerGameMode gameMode;
-
-    @ModifyVariable(method = "startUseItem", at = @At("STORE"), name = "heldItem")
-    private ItemStack animatium$fixCopyStackUseItem(final ItemStack heldItem) {
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().items.equipAnimationVersion != EquipAnimationVersionSetting.VANILLA) {
-            // Update the stack to match mutations to the stack in other classes
-            return heldItem.copy();
-        } else {
-            return heldItem;
-        }
-    }
 
     @WrapOperation(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;swing(Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/component/SwingAnimation;Z)Z", ordinal = 2))
     private boolean animatium$swingOnUse(final LocalPlayer instance, final InteractionHand hand, final SwingAnimation animation, final boolean sendToSwingingEntity, final Operation<Boolean> original, @Local(name = "heldItem") final ItemStack heldItem) {

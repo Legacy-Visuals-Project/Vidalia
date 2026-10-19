@@ -150,7 +150,6 @@
 		"v1.rendering.sky.the_void.MixinClientLevel_VoidParticles",
 		"v1.rendering.states.MixinArmedEntityRenderState",
 		"v1.rendering.states.MixinCameraRenderState",
-		"v1.rendering.states.MixinFirstPersonHandsAndItemsRenderState",
 		"v1.rendering.states.MixinGameRenderer",
 		"v1.rendering.states.MixinItemStackRenderState",
 		"v1.rendering.states.MixinSkyRenderState"
