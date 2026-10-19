@@ -46,7 +46,7 @@ object IrisUtil {
             }
 
             pipelineCache[pipeline] = program
-            IrisApi.getInstance().assignPipeline(pipeline, program.internal() as IrisProgram)
+            //IrisApi.getInstance().assignPipeline(pipeline, program.internal() as IrisProgram)
         }
     }
 
