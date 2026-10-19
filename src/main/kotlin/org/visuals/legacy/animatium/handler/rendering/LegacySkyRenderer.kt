@@ -23,7 +23,9 @@ import net.minecraft.util.ARGB
 import org.joml.Matrix4f
 import org.joml.Vector4f
 import org.visuals.legacy.animatium.config.AnimatiumConfig
+import org.visuals.legacy.animatium.handler.compatibility.IrisPhase
 import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline
+import org.visuals.legacy.animatium.handler.compatibility.IrisUtil
 import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines
 import org.visuals.legacy.animatium.renderer.DynamicTransforms
 import org.visuals.legacy.animatium.renderer.buffer.Geometry
@@ -97,6 +99,7 @@ object LegacySkyRenderer {
     @JvmStatic
     fun renderVoidDisc(pass: RenderPass, useDepthAttachment: Boolean) {
         profile("void_disc") {
+            IrisUtil.setPhase(IrisPhase.VOID)
             pass.pushDebugGroup({ "Void disc" })
             renderSkyDisc(pass, Vector4f(0.0F, 0.0F, 0.0F, 1.0F), useDepthAttachment, BOTTOM_GEOMETRY) {
                 it.translate(0.0F, 12.0F, 0.0F)
@@ -108,6 +111,7 @@ object LegacySkyRenderer {
     @JvmStatic
     fun renderBlueVoid(pass: RenderPass, skyColor: Int, depth: Double, useDepthAttachment: Boolean) {
         profile("blue_void") {
+            IrisUtil.setPhase(IrisPhase.VOID)
             pass.pushDebugGroup({ "Blue Void Disc" })
             val color = Vector4f(
                 ARGB.redFloat(skyColor) * 0.2F + 0.04F,
@@ -153,6 +157,7 @@ object LegacySkyRenderer {
     @JvmStatic
     fun renderVoidBox(pass: RenderPass, depth: Double, useDepthAttachment: Boolean) {
         profile("player_void_box") {
+            IrisUtil.setPhase(IrisPhase.VOID)
             WrappedRenderer.of(pass).use { renderer ->
                 pass.pushDebugGroup({ "Player Void Box" })
                 renderer.setPipeline(AnimatiumPipelines.VOID_BOX.get(useDepthAttachment))
