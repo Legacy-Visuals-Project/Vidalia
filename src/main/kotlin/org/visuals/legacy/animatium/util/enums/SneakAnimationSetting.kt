@@ -20,7 +20,9 @@ enum class SneakAnimationSetting {
     V1_13,
     VANILLA;
 
-    fun isSmooth() = this != V1_8
+    fun overridesInterpolation() = this == V1_7 || this == V1_8
+
+    fun hasSneakDecay() = this == V1_7
 
     fun isInstantResponse() = this != VANILLA
 }

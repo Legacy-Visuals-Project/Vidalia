@@ -14,13 +14,9 @@
 
 package org.visuals.legacy.animatium.mixins.v1.general.camera.sneaking;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.player.Player;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,65 +25,37 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
-import org.visuals.legacy.animatium.mixins.accessor.PlayerAccessor;
-import org.visuals.legacy.animatium.util.EntityUtilKt;
-import org.visuals.legacy.animatium.util.enums.SneakAnimationSetting;
+import org.visuals.legacy.animatium.handler.rendering.camera.SneakAnimationState;
 
 @Mixin(Camera.class)
 public abstract class MixinCamera_Sneaking {
+    @Shadow
+    private Entity entity;
+
     @Shadow
     private float eyeHeightOld;
 
     @Shadow
     private float eyeHeight;
 
-    @Shadow
-    private Entity entity;
-
-    @Inject(method = "setup", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V", shift = At.Shift.AFTER))
-    private void animatium$removeSmoothSneaking(final CallbackInfo ci) {
-        if (Animatium.isEnabled() && !AnimatiumConfig.instance().movement.sneakAnimation.isSmooth()) {
-            this.eyeHeightOld = this.eyeHeight;
-            this.eyeHeight = this.animatium$getSneakingEyeHeight();
-        }
-    }
-
-    @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getEyeHeight()F"))
-    private float animatium$useOldEyeHeight(final Entity instance, final Operation<Float> original) {
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().movement.fakeOldSneakEyeHeight) {
-            return this.animatium$getSneakingEyeHeight();
-        } else {
-            return original.call(instance);
-        }
-    }
-
-    @WrapOperation(method = "tick", at = @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/Camera;eyeHeight:F"))
-    private void animatium$oldSneakAnimationInterpolation(final Camera instance, final float value, final Operation<Void> original) {
-        final SneakAnimationSetting sneakAnimation = AnimatiumConfig.instance().movement.sneakAnimation;
-        if (Animatium.isEnabled() && sneakAnimation != SneakAnimationSetting.VANILLA && this.entity.isCrouching()) {
-            if (sneakAnimation == SneakAnimationSetting.V1_7 && this.entity.getEyeHeight() < this.eyeHeight) {
-                this.eyeHeight = this.animatium$getSneakingEyeHeight();
-                return;
-            } else if (!AnimatiumConfig.instance().movement.longUnsneak && this.entity.getEyeHeight() > this.eyeHeight) {
-                this.eyeHeight = this.entity.getEyeHeight(Pose.STANDING) * EntityUtilKt.getScale(this.entity);
-                return;
-            }
-        }
-
-        original.call(instance, value);
-    }
-
     @Unique
-    private float animatium$getSneakingEyeHeight() {
-        final float currentEyeHeight = this.entity.getEyeHeight();
-        if (Animatium.isEnabled() &&
-                AnimatiumConfig.instance().movement.fakeOldSneakEyeHeight &&
-                this.entity.hasPose(Pose.CROUCHING) &&
-                this.entity instanceof Player player &&
-                ((PlayerAccessor) player).animatium$canChangeIntoPose(Pose.STANDING)) {
-            return 1.54F * player.getScale();
-        } else {
-            return currentEyeHeight;
+    private final SneakAnimationState animatium$state = new SneakAnimationState();
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/attribute/EnvironmentAttributeProbe;tick(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/phys/Vec3;)V"))
+    private void animatium$sneakAnimation(final CallbackInfo ci) {
+        if (Animatium.isEnabled()) {
+            final Minecraft minecraft = Minecraft.getInstance();
+
+            this.animatium$state.extract(this.entity, minecraft.options);
+            if (AnimatiumConfig.instance().movement.sneakAnimation.overridesInterpolation() && this.animatium$state.isApplicable()) {
+                // TODO: Figure nice way to fetch tickDelta
+                final float tickDelta = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+                final float eyeHeight = this.animatium$state.getEyeHeight(tickDelta);
+                this.eyeHeightOld = eyeHeight;
+                this.eyeHeight = eyeHeight;
+            }
+
+            this.animatium$state.tick();
         }
     }
 }
