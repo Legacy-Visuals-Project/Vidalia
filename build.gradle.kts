@@ -22,6 +22,7 @@ repositories {
     maven("https://maven.bawnorton.com/releases") // MixinSquared
     maven("https://maven.terraformersmc.com/") // Mod Menu
     maven("https://maven.isxander.dev/releases") // YACL
+    maven("https://api.modrinth.com/maven") // Iris
 }
 
 class ModData {
@@ -114,6 +115,8 @@ val modImplementation: NamedDomainObjectProvider<Configuration> =
     configurations.named(if (mod.obfuscated) "modImplementation" else "implementation")
 val modRuntimeOnly: NamedDomainObjectProvider<Configuration> =
     configurations.named(if (mod.obfuscated) "modRuntimeOnly" else "runtimeOnly")
+val modCompileOnly: NamedDomainObjectProvider<Configuration> =
+    configurations.named(if (mod.obfuscated) "modCompileOnly" else "compileOnly")
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.minecraftVersion}")
@@ -144,6 +147,10 @@ dependencies {
     include(implementation("net.fabricmc:fabric-language-kotlin:${deps.languageKotlinVersion}")!!)
     optionalProp("deps.yacl_version") { prop ->
         modImplementation("dev.isxander:yet-another-config-lib:$prop")
+    }
+
+    optionalProp("deps.iris_version") { prop ->
+        modCompileOnly("maven.modrinth:YL57xq9U:$prop")
     }
 }
 

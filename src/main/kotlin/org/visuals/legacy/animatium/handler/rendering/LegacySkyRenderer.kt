@@ -22,7 +22,9 @@ import net.minecraft.client.multiplayer.ClientLevel
 import net.minecraft.util.ARGB
 import org.joml.Vector4f
 import org.visuals.legacy.animatium.config.AnimatiumConfig
+import org.visuals.legacy.animatium.handler.compatibility.IrisPhase
 import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline
+import org.visuals.legacy.animatium.handler.compatibility.IrisUtil
 import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines
 import org.visuals.legacy.animatium.renderer.DynamicTransforms
 import org.visuals.legacy.animatium.renderer.buffer.IndexedGeometry
@@ -94,6 +96,7 @@ object LegacySkyRenderer {
     @JvmStatic
     fun renderBlueVoid(pass: RenderPass, skyColor: Int, depth: Double) {
         profile("blue_void") {
+            IrisUtil.setPhase(IrisPhase.VOID)
             WrappedRenderer.of(pass).use { renderer ->
                 pass.pushDebugGroup({ "Lower Sky Disc" })
                 val matrix = RenderSystem.getModelViewMatrixCopy().translate(
@@ -136,6 +139,7 @@ object LegacySkyRenderer {
     @JvmStatic
     fun renderVoidBox(pass: RenderPass, depth: Double) {
         profile("player_void_box") {
+            IrisUtil.setPhase(IrisPhase.VOID)
             WrappedRenderer.of(pass).use { renderer ->
                 pass.pushDebugGroup({ "Player Void Box" })
                 renderer.setPipeline(AnimatiumPipelines.VOID_BOX)

@@ -34,6 +34,8 @@ import net.minecraft.util.profiling.ProfilerFiller
 import net.minecraft.world.phys.Vec3
 import org.joml.Vector3f
 import org.visuals.legacy.animatium.config.AnimatiumConfig
+import org.visuals.legacy.animatium.handler.compatibility.IrisPhase
+import org.visuals.legacy.animatium.handler.compatibility.IrisUtil
 import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines
 import org.visuals.legacy.animatium.renderer.DynamicTransforms
 import org.visuals.legacy.animatium.renderer.buffer.IndexedGeometry
@@ -247,6 +249,7 @@ class LegacyCloudRenderer : SimplePreparableReloadListener<Optional<TextureData>
 
     fun render(pass: RenderPass) {
         if (this.textureData != null && this.indexCount != 0) {
+            IrisUtil.setPhase(IrisPhase.CLOUDS)
             val state = this.state ?: return
             var x = state.cameraPosition.x + state.tickDelta * 0.030000001F
             var z = state.cameraPosition.z + 3.96F

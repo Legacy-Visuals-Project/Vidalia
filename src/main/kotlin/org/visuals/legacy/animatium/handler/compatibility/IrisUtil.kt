@@ -16,40 +16,47 @@ package org.visuals.legacy.animatium.handler.compatibility
 
 import com.mojang.renderpearl.api.pipeline.RenderPipeline
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap
-import java.lang.reflect.Method
+import net.fabricmc.loader.api.FabricLoader
+import net.irisshaders.iris.Iris
+import net.irisshaders.iris.api.v0.IrisApi
+import net.irisshaders.iris.api.v0.IrisProgram
+import net.irisshaders.iris.pipeline.WorldRenderingPhase
 import java.util.*
 
 object IrisUtil {
+    private val HAS_IRIS = FabricLoader.getInstance().isModLoaded("iris")
+
     private val pipelineCache = Object2ObjectOpenHashMap<RenderPipeline, IrisPipeline>()
-    private var IRIS_INSTANCE: Any? = null
-    private var IRIS_ASSIGN_PIPELINE_METHOD: Method? = null
 
     init {
-        try {
-            // API
-            val irisApiClass = Class.forName("net.irisshaders.iris.api.v0.IrisApi")
-            IRIS_INSTANCE = irisApiClass.getMethod("getInstance").invoke(null)
-
-            // Enums
+        if (HAS_IRIS) {
             val irisProgramEnum = Class.forName("net.irisshaders.iris.api.v0.IrisProgram").asSubclass(Enum::class.java)
             Arrays.stream(IrisPipeline.VALUES).forEach { it.initialize(irisProgramEnum) }
 
-            // Methods
-            IRIS_ASSIGN_PIPELINE_METHOD = IRIS_INSTANCE!!::class.java.getMethod("assignPipeline", RenderPipeline::class.java, irisProgramEnum)
-        } catch (_: Exception) {
+            val irisPhaseEnum = Class.forName("net.irisshaders.iris.pipeline.WorldRenderingPhase").asSubclass(Enum::class.java)
+            Arrays.stream(IrisPhase.VALUES).forEach { it.initialize(irisPhaseEnum) }
         }
     }
 
     @JvmStatic
     fun assignPipeline(pipeline: RenderPipeline, program: IrisPipeline) {
-        try {
+        if (HAS_IRIS) {
             if (pipelineCache.containsKey(pipeline) && pipelineCache[pipeline] == program) {
                 return
             }
 
             pipelineCache[pipeline] = program
-            IRIS_ASSIGN_PIPELINE_METHOD?.invoke(IRIS_INSTANCE, pipeline, program.internal())
-        } catch (_: Exception) {
+            IrisApi.getInstance().assignPipeline(pipeline, program.internal() as IrisProgram)
         }
     }
+
+    @JvmStatic
+    fun setPhase(phase: IrisPhase) {
+        if (HAS_IRIS) {
+            Iris.getPipelineManager().pipeline.ifPresent { it.phase = phase.internal() as WorldRenderingPhase }
+        }
+    }
+
+    @JvmStatic
+    fun isShaderActive() = HAS_IRIS && IrisApi.getInstance().isShaderPackInUse
 }
