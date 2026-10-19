@@ -31,7 +31,6 @@ class SneakAnimationState {
     @get:JvmName("isApplicable")
     var applicable = false
     var scale = 1.0F
-    var vanillaEyeHeight = 0.0F
     var standingEyeHeight = 0.0F
     var crouchingEyeHeight = 0.0F
     var currentEyeHeight = 0.0F
@@ -41,7 +40,6 @@ class SneakAnimationState {
         this.applicable = entity.hasPose(Pose.CROUCHING) || entity.hasPose(Pose.STANDING);
         if (this.applicable) {
             this.scale = entity.getScale()
-            this.vanillaEyeHeight = entity.eyeHeight
             this.standingEyeHeight = entity.getDimensions(Pose.STANDING).eyeHeight
             this.crouchingEyeHeight = entity.getDimensions(Pose.CROUCHING).eyeHeight
             this.currentEyeHeight = entity.getDimensions(entity.pose).eyeHeight
