@@ -90,7 +90,7 @@ public abstract class MixinFirstPersonHandsAndItems_EquipAnimationChecks {
 
     @WrapOperation(method = "shouldInstantlyReplaceVisibleItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;matchesIgnoringComponents(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;Ljava/util/function/Predicate;)Z"))
     private boolean animatium$disableVanillaEquipCheck(final ItemStack left, final ItemStack right, final Predicate<DataComponentType<?>> ignoredPredicate, final Operation<Boolean> original) {
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().items.equipAnimationVersion == EquipAnimationVersionSetting.V1_7) {
+        if (Animatium.isEnabled() && AnimatiumConfig.instance().items.equipAnimationVersion != EquipAnimationVersionSetting.VANILLA) {
             return false;
         } else {
             return original.call(left, right, ignoredPredicate);
