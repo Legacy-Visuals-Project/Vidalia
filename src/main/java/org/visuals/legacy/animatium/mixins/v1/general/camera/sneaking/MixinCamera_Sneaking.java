@@ -15,6 +15,7 @@
 package org.visuals.legacy.animatium.mixins.v1.general.camera.sneaking;
 
 import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
-import org.visuals.legacy.animatium.handler.rendering.camera.SneakAnimationState;
+import org.visuals.legacy.animatium.handler.rendering.camera.LegacySneakAnimation;
 
 @Mixin(Camera.class)
 public abstract class MixinCamera_Sneaking {
@@ -39,23 +40,26 @@ public abstract class MixinCamera_Sneaking {
     private float eyeHeight;
 
     @Unique
-    private final SneakAnimationState animatium$state = new SneakAnimationState();
+    private final LegacySneakAnimation animatium$animation = new LegacySneakAnimation();
+
+    @Unique
+    private float animatium$tickDelta;
+
+    @Inject(method = "update", at = @At("HEAD"))
+    private void animatium$fetchTickDelta(final DeltaTracker deltaTracker, final CallbackInfo ci) {
+        this.animatium$tickDelta = deltaTracker.getGameTimeDeltaPartialTick(false);
+    }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/attribute/EnvironmentAttributeProbe;tick(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/phys/Vec3;)V"))
     private void animatium$sneakAnimation(final CallbackInfo ci) {
         if (Animatium.isEnabled()) {
-            final Minecraft minecraft = Minecraft.getInstance();
-
-            this.animatium$state.extract(this.entity, minecraft.options);
-            if (AnimatiumConfig.instance().movement.sneakAnimation.overridesInterpolation() && this.animatium$state.isApplicable()) {
-                // TODO: Figure nice way to fetch tickDelta
-                final float tickDelta = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-                final float eyeHeight = this.animatium$state.getEyeHeight(tickDelta);
-                this.eyeHeightOld = eyeHeight;
-                this.eyeHeight = eyeHeight;
+            this.animatium$animation.extract(this.entity, Minecraft.getInstance().options);
+            if (AnimatiumConfig.instance().movement.sneakAnimation.overridesInterpolation() && this.animatium$animation.isApplicable()) {
+                this.eyeHeightOld = this.animatium$animation.getPreviousEyeHeight();
+                this.eyeHeight = this.animatium$animation.getEyeHeight();
             }
 
-            this.animatium$state.tick();
+            this.animatium$animation.tick(this.animatium$tickDelta);
         }
     }
 }

@@ -24,17 +24,21 @@ import org.visuals.legacy.animatium.mixins.accessor.PlayerAccessor
 import org.visuals.legacy.animatium.util.getScale
 
 // TODO: Fix going under a slab
-class SneakAnimationState {
+class LegacySneakAnimation {
     private var previousDecay = 0.0F
     private var decay = 0.0F
 
+    private var lastModifiedEyeHeight = 0.0F
+    private var modifiedEyeHeight = 0.0F
+
     @get:JvmName("isApplicable")
     var applicable = false
-    var scale = 1.0F
-    var standingEyeHeight = 0.0F
-    var crouchingEyeHeight = 0.0F
-    var currentEyeHeight = 0.0F
-    var sneaking = false
+        private set
+    private var scale = 1.0F
+    private var standingEyeHeight = 0.0F
+    private var crouchingEyeHeight = 0.0F
+    private var currentEyeHeight = 0.0F
+    private var sneaking = false
 
     fun extract(entity: Entity, options: Options) {
         this.applicable = entity.hasPose(Pose.CROUCHING) || entity.hasPose(Pose.STANDING);
@@ -53,22 +57,24 @@ class SneakAnimationState {
         }
     }
 
-    fun tick() {
+    fun tick(tickDelta: Float) {
+        val movement = AnimatiumConfig.instance().movement
+
+        // Tick Decay
         this.previousDecay = this.decay
         if (this.sneaking) {
-            this.decay = if (AnimatiumConfig.instance().movement.fakeOldSneakEyeHeight)
+            this.decay = if (movement.fakeOldSneakEyeHeight)
                 0.08F
             else
                 this.standingEyeHeight - this.crouchingEyeHeight
         } else {
             this.decay *= 0.4F
         }
-    }
 
-    fun getEyeHeight(tickDelta: Float): Float {
-        val movement = AnimatiumConfig.instance().movement
-        return if (movement.sneakAnimation.hasSneakDecay()) {
-            (this.standingEyeHeight - this.decay(tickDelta)) * this.scale
+        // Update Eye Height
+        this.lastModifiedEyeHeight = this.modifiedEyeHeight
+        this.modifiedEyeHeight = if (movement.sneakAnimation.hasSneakDecay()) {
+            (this.standingEyeHeight - this.getDecayHeight(tickDelta)) * this.scale
         } else if (this.sneaking) {
             if (movement.fakeOldSneakEyeHeight) {
                 1.54F * this.scale
@@ -80,5 +86,9 @@ class SneakAnimationState {
         }
     }
 
-    private fun decay(tickDelta: Float) = Mth.lerp(tickDelta, this.previousDecay, this.decay)
+    fun getPreviousEyeHeight() = this.lastModifiedEyeHeight
+
+    fun getEyeHeight() = this.modifiedEyeHeight
+
+    private fun getDecayHeight(tickDelta: Float) = Mth.lerp(tickDelta, this.previousDecay, this.decay)
 }
