@@ -79,7 +79,7 @@ public abstract class MixinFirstPersonHandsAndItems_EquipAnimationChecks {
             final boolean hasItem = !this.mainHandItem.isEmpty();
             final boolean hasNewItem = !nextMainHand.isEmpty();
             if (hasItem && hasNewItem) {
-                return !animatium$isEqualForHoldAnimation(equipAnimation, this.mainHandItem, nextMainHand, player);
+                return !this.animatium$isEqualForHoldAnimation(equipAnimation, this.mainHandItem, nextMainHand, player);
             } else {
                 return hasItem || hasNewItem;
             }

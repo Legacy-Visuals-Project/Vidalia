@@ -21,6 +21,8 @@ import com.mojang.renderpearl.api.pipeline.ColorTargetState
 import net.minecraft.client.CloudStatus
 import net.minecraft.client.renderer.RenderPipelines
 import org.visuals.legacy.animatium.Animatium.location
+import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline
+import org.visuals.legacy.animatium.handler.compatibility.IrisUtil
 import java.util.*
 
 data class CloudPipelineSet(
@@ -55,6 +57,10 @@ data class CloudPipelineSet(
                     .withCull(false)
                     .build()
             )
+
+            IrisUtil.assignPipeline(defaultPipeline, IrisPipeline.CLOUDS)
+            IrisUtil.assignPipeline(depthOnlyPipeline, IrisPipeline.CLOUDS)
+            IrisUtil.assignPipeline(flatPipeline, IrisPipeline.CLOUDS)
 
             return CloudPipelineSet(defaultPipeline, depthOnlyPipeline, flatPipeline)
         }

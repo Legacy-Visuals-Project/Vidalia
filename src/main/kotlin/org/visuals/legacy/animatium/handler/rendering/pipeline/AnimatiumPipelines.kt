@@ -22,6 +22,8 @@ import com.mojang.renderpearl.api.pipeline.*
 import net.minecraft.client.renderer.BindGroupLayouts
 import net.minecraft.client.renderer.RenderPipelines
 import org.visuals.legacy.animatium.Animatium.location
+import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline
+import org.visuals.legacy.animatium.handler.compatibility.IrisUtil
 import org.visuals.legacy.animatium.handler.rendering.clouds.CloudPipelineSet
 import java.util.*
 
@@ -215,4 +217,8 @@ object AnimatiumPipelines {
         .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
         .withVertexFormat(POSITION_TEX_OVERLAY)
         .build()
+
+    init {
+        IrisUtil.assignPipeline(ARMOR_GLINT, IrisPipeline.ARMOR_GLINT)
+    }
 }
