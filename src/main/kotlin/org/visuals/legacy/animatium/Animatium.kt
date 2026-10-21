@@ -18,7 +18,8 @@ import com.mojang.logging.LogUtils
 import net.minecraft.ChatFormatting
 import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.components.debug.DebugScreenEntries
+import net.minecraft.client.core.registries.BuiltInClientRegistries
+import net.minecraft.core.Registry
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import org.visuals.legacy.animatium.config.AnimatiumConfig
@@ -69,7 +70,7 @@ object Animatium {
             LOGGER.error("Failed to load animatium utility config, defaulting...")
         }
 
-        DebugScreenEntries.register(AnimatiumDebugEntry.ID, AnimatiumDebugEntry())
-        DebugScreenEntries.register(AnimatiumEyeHeightDebugEntry.ID, AnimatiumEyeHeightDebugEntry())
+        Registry.register(BuiltInClientRegistries.DEBUG_SCREEN_ENTRY, AnimatiumDebugEntry.ID, AnimatiumDebugEntry())
+        Registry.register(BuiltInClientRegistries.DEBUG_SCREEN_ENTRY, AnimatiumEyeHeightDebugEntry.ID, AnimatiumEyeHeightDebugEntry())
     }
 }

@@ -14,22 +14,14 @@
 
 package org.visuals.legacy.animatium.handler.config
 
-//? <=26.3 {
-/*import com.terraformersmc.modmenu.api.ConfigScreenFactory
+import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
-*///? }
-
 import dev.kikugie.fletching_table.annotation.fabric.Entrypoint
 import net.minecraft.client.gui.screens.Screen
 import org.visuals.legacy.animatium.config.AnimatiumConfig
 
-//@Entrypoint("modmenu")
-class ModMenuIntegration
-    //? <=26.3
-    /*: ModMenuApi*/
-{
-    //? <=26.3 {
-    /*override fun getModConfigScreenFactory(): ConfigScreenFactory<*> =
+@Entrypoint("modmenu")
+class ModMenuIntegration : ModMenuApi {
+    override fun getModConfigScreenFactory(): ConfigScreenFactory<*> =
         { screen: Screen -> AnimatiumConfig.getConfigScreen(screen) }
-    *///? }
 }
