@@ -25,7 +25,7 @@ object AnimatiumRenderTypes {
     @JvmField
     val ARMOR_GLINT = RenderType.create(
         "animatium_armor_glint",
-        RenderSetup.builder(AnimatiumPipelines.ARMOR_GLINT)
+        RenderSetup.nonOitBuilder(AnimatiumPipelines.ARMOR_GLINT)
             .withTexture("Sampler0", ItemFeatureRenderer.ENCHANTED_GLINT_ARMOR)
             .setTextureTransform(TextureTransform.ARMOR_ENTITY_GLINT_TEXTURING)
             .setLayeringTransform(LayeringTransform.VIEW_OFFSET_Z_LAYERING)

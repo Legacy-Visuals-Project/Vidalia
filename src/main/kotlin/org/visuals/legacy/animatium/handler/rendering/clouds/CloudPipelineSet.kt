@@ -19,10 +19,10 @@ import com.mojang.renderpearl.api.GpuFormat
 import com.mojang.renderpearl.api.pipeline.BlendFunction
 import com.mojang.renderpearl.api.pipeline.ColorTargetState
 import net.minecraft.client.CloudStatus
-import net.minecraft.client.renderer.RenderPipelines
 import org.visuals.legacy.animatium.Animatium.location
 import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline
 import org.visuals.legacy.animatium.handler.compatibility.IrisUtil
+import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines
 import java.util.*
 
 data class CloudPipelineSet(
@@ -32,13 +32,13 @@ data class CloudPipelineSet(
 ) {
     companion object {
         fun create(name: String, snippet: RenderPipeline.Snippet): CloudPipelineSet {
-            val defaultPipeline = RenderPipelines.register(
+            val defaultPipeline = AnimatiumPipelines.precompiled(
                 RenderPipeline.builder(snippet)
                     .withLocation(location("pipeline/${name}"))
                     .build()
             )
 
-            val depthOnlyPipeline = RenderPipelines.register(
+            val depthOnlyPipeline = AnimatiumPipelines.precompiled(
                 RenderPipeline.builder(snippet)
                     .withLocation(location("pipeline/${name}_depth_only"))
                     .withColorTargetState(
@@ -51,7 +51,7 @@ data class CloudPipelineSet(
                     .build()
             )
 
-            val flatPipeline = RenderPipelines.register(
+            val flatPipeline = AnimatiumPipelines.precompiled(
                 RenderPipeline.builder(snippet)
                     .withLocation(location("pipeline/${name}_flat"))
                     .withCull(false)

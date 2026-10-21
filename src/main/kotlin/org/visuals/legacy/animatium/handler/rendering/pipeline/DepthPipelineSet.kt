@@ -16,7 +16,6 @@ package org.visuals.legacy.animatium.handler.rendering.pipeline
 
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import com.mojang.renderpearl.api.pipeline.DepthStencilState
-import net.minecraft.client.renderer.RenderPipelines
 import org.visuals.legacy.animatium.Animatium.location
 
 data class DepthPipelineSet(
@@ -25,13 +24,13 @@ data class DepthPipelineSet(
 ) {
     companion object {
         fun create(name: String, depthStencilState: DepthStencilState, snippet: RenderPipeline.Snippet): DepthPipelineSet {
-            val defaultPipeline = RenderPipelines.register(
+            val defaultPipeline = AnimatiumPipelines.precompiled(
                 RenderPipeline.builder(snippet)
                     .withLocation(location("pipeline/${name}"))
                     .build()
             )
 
-            val depthPipeline = RenderPipelines.register(
+            val depthPipeline = AnimatiumPipelines.precompiled(
                 RenderPipeline.builder(snippet)
                     .withLocation(location("pipeline/${name}_depth"))
                     .withDepthStencilState(depthStencilState)

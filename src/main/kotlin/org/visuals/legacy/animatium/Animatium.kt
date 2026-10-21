@@ -16,14 +16,15 @@ package org.visuals.legacy.animatium
 
 import com.mojang.logging.LogUtils
 import net.minecraft.ChatFormatting
-import net.minecraft.SharedConstants
 import net.minecraft.client.Minecraft
 import net.minecraft.client.core.registries.BuiltInClientRegistries
 import net.minecraft.core.Registry
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
+import net.minecraft.util.DevUtil
 import org.visuals.legacy.animatium.config.AnimatiumConfig
 import org.visuals.legacy.animatium.handler.rendering.lighting.LegacyDiffuseLighting
+import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines
 import org.visuals.legacy.animatium.handler.screen.debug.AnimatiumDebugEntry
 import org.visuals.legacy.animatium.handler.screen.debug.AnimatiumEyeHeightDebugEntry
 import org.visuals.legacy.animatium.util.ToastUtil
@@ -58,7 +59,7 @@ object Animatium {
     @JvmStatic
     fun initialize() {
         if (AnimatiumConstants.IS_DEVELOPMENT) {
-            SharedConstants.IS_RUNNING_IN_IDE = true
+            DevUtil.IS_RUNNING_IN_IDE = true
         }
 
         AnimatiumConfig.load()
@@ -70,6 +71,7 @@ object Animatium {
             LOGGER.error("Failed to load animatium utility config, defaulting...")
         }
 
+        AnimatiumPipelines.bootstrap()
         Registry.register(BuiltInClientRegistries.DEBUG_SCREEN_ENTRY, AnimatiumDebugEntry.ID, AnimatiumDebugEntry())
         Registry.register(BuiltInClientRegistries.DEBUG_SCREEN_ENTRY, AnimatiumEyeHeightDebugEntry.ID, AnimatiumEyeHeightDebugEntry())
     }

@@ -97,11 +97,11 @@ class PresetsScreen(private val original: Screen?) :
         this.updateVersionButtonState()
     }
 
-    override fun extractRenderState(graphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, tickDelta: Float) {
-        this.original?.extractRenderState(graphics, -999, -999, tickDelta)
+    override fun extractRenderState(graphics: GuiGraphicsExtractor) {
+        graphics.extractWithoutMouse { this.original?.extractRenderState(graphics) }
 
         graphics.fill(0, 0, this.width, this.height, ARGB.color(0.35F, 0))
-        super.extractRenderState(graphics, mouseX, mouseY, tickDelta)
+        super.extractRenderState(graphics)
 
         graphics.drawScaledText(
             this.font,

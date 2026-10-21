@@ -20,7 +20,7 @@ import com.mojang.blaze3d.vertex.VertexFormat
 import com.mojang.renderpearl.api.GpuFormat
 import com.mojang.renderpearl.api.pipeline.*
 import net.minecraft.client.renderer.BindGroupLayouts
-import net.minecraft.client.renderer.RenderPipelines
+import net.minecraft.client.renderer.pipeline.RenderPipelines
 import org.visuals.legacy.animatium.Animatium.location
 import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline
 import org.visuals.legacy.animatium.handler.compatibility.IrisUtil
@@ -62,7 +62,7 @@ object AnimatiumPipelines {
         .buildSnippet()
 
     @JvmField
-    val LEGACY_PANORAMA_1 = RenderPipelines.register(
+    val LEGACY_PANORAMA_1 = precompiled(
         RenderPipeline.builder(LEGACY_PANORAMA_SNIPPET)
             .withLocation(location("pipeline/legacy_panorama_1"))
             .withColorTargetState(panoramaBlendState(ColorTargetState.WRITE_ALL))
@@ -70,7 +70,7 @@ object AnimatiumPipelines {
     )
 
     @JvmField
-    val LEGACY_PANORAMA_2 = RenderPipelines.register(
+    val LEGACY_PANORAMA_2 = precompiled(
         RenderPipeline.builder(LEGACY_PANORAMA_SNIPPET)
             .withLocation(location("pipeline/legacy_panorama_2"))
             .withColorTargetState(panoramaBlendState(ColorTargetState.WRITE_COLOR))
@@ -78,7 +78,7 @@ object AnimatiumPipelines {
     )
 
     @JvmField
-    val LEGACY_PANORAMA_BLUR = RenderPipelines.register(
+    val LEGACY_PANORAMA_BLUR = precompiled(
         RenderPipeline.builder(TEXTURED_QUAD)
             .withLocation(location("pipeline/legacy_panorama_blur"))
             .withVertexShader(location("core/legacy_panorama_blur"))
@@ -172,7 +172,7 @@ object AnimatiumPipelines {
 
     // Color Boost
     @JvmField
-    val COLOR_BOOST_BLIT: RenderPipeline = RenderPipelines.register(
+    val COLOR_BOOST_BLIT: RenderPipeline = precompiled(
         RenderPipeline.builder()
             .withLocation(location("pipeline/colorboost"))
             .withVertexShader("core/screentriangle")
@@ -190,7 +190,7 @@ object AnimatiumPipelines {
         .build()
 
     @JvmField
-    val LEGACY_LIGHTMAP: RenderPipeline = RenderPipelines.register(
+    val LEGACY_LIGHTMAP: RenderPipeline = precompiled(
         RenderPipeline.builder()
             .withLocation(location("pipeline/legacy_lightmap"))
             .withVertexShader("core/screentriangle")
@@ -218,7 +218,9 @@ object AnimatiumPipelines {
         .withVertexFormat(POSITION_TEX_OVERLAY)
         .build()
 
-    init {
+    fun precompiled(pipeline: RenderPipeline) = pipeline // TODO
+
+    fun bootstrap() {
         IrisUtil.assignPipeline(ARMOR_GLINT, IrisPipeline.ARMOR_GLINT)
     }
 }
