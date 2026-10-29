@@ -76,8 +76,8 @@ public abstract class MixinFirstPersonHandsAndItems_EquipAnimationChecks {
     private boolean animatium$legacyEquipLogic(final boolean original, @Local(name = "player", argsOnly = true) final LocalPlayer player, @Local(name = "nextMainHand") final ItemStack nextMainHand) {
         final EquipAnimationVersionSetting equipAnimation = AnimatiumConfig.instance().items.equipAnimationVersion;
         if (Animatium.isEnabled() && equipAnimation != EquipAnimationVersionSetting.VANILLA) {
-            final boolean hasItem = !this.mainHandItem.isEmpty();
-            final boolean hasNewItem = !nextMainHand.isEmpty();
+            final boolean hasItem = this.mainHandItem != ItemStack.EMPTY;
+            final boolean hasNewItem = nextMainHand != ItemStack.EMPTY;
             if (hasItem && hasNewItem) {
                 return !this.animatium$isEqualForHoldAnimation(equipAnimation, this.mainHandItem, nextMainHand, player);
             } else {
