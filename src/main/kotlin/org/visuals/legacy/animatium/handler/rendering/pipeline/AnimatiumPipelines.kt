@@ -41,7 +41,7 @@ object AnimatiumPipelines {
     )
 
     fun panoramaBlendState(colorMask: @ColorTargetState.WriteMask Int) =
-        ColorTargetState(Optional.of(PANORAMA_BLEND), GpuFormat.RGBA8_UNORM, colorMask)
+        ColorTargetState(Optional.of(PANORAMA_BLEND), colorMask)
 
     @JvmField
     val TEXTURED_QUAD = RenderPipeline.builder(RenderPipelines.GLOBALS_SNIPPET)
@@ -62,23 +62,19 @@ object AnimatiumPipelines {
         .buildSnippet()
 
     @JvmField
-    val LEGACY_PANORAMA_1 = precompiled(
-        RenderPipeline.builder(LEGACY_PANORAMA_SNIPPET)
-            .withLocation(location("pipeline/legacy_panorama_1"))
-            .withColorTargetState(panoramaBlendState(ColorTargetState.WRITE_ALL))
-            .build()
-    )
+    val LEGACY_PANORAMA_1 = RenderPipeline.builder(LEGACY_PANORAMA_SNIPPET)
+        .withLocation(location("pipeline/legacy_panorama_1"))
+        .withColorTargetState(panoramaBlendState(ColorTargetState.WRITE_ALL))
+        .build()
 
     @JvmField
-    val LEGACY_PANORAMA_2 = precompiled(
-        RenderPipeline.builder(LEGACY_PANORAMA_SNIPPET)
-            .withLocation(location("pipeline/legacy_panorama_2"))
-            .withColorTargetState(panoramaBlendState(ColorTargetState.WRITE_COLOR))
-            .build()
-    )
+    val LEGACY_PANORAMA_2 = RenderPipeline.builder(LEGACY_PANORAMA_SNIPPET)
+        .withLocation(location("pipeline/legacy_panorama_2"))
+        .withColorTargetState(panoramaBlendState(ColorTargetState.WRITE_COLOR))
+        .build()
 
     @JvmField
-    val LEGACY_PANORAMA_BLUR = precompiled(
+    val LEGACY_PANORAMA_BLUR =
         RenderPipeline.builder(TEXTURED_QUAD)
             .withLocation(location("pipeline/legacy_panorama_blur"))
             .withVertexShader(location("core/legacy_panorama_blur"))
@@ -86,7 +82,6 @@ object AnimatiumPipelines {
             .withColorTargetState(panoramaBlendState(ColorTargetState.WRITE_COLOR))
             .withVertexFormat(DefaultVertexFormat.POSITION_TEX)
             .build()
-    )
 
     // Sky
     @JvmField
@@ -100,11 +95,10 @@ object AnimatiumPipelines {
             .buildSnippet()
 
     @JvmField
-    val VOID_BOX = DepthPipelineSet.create(
-        "void_box",
-        NO_DEPTH_WRITE,
-        VOID_BOX_SNIPPET
-    )
+    val VOID_BOX = RenderPipeline.builder(VOID_BOX_SNIPPET)
+        .withLocation(location("pipeline/void_box"))
+        .withDepthStencilState(NO_DEPTH_WRITE)
+        .build()
 
     @JvmField
     val LEGACY_SKY_SNIPPET =
@@ -118,23 +112,20 @@ object AnimatiumPipelines {
             .buildSnippet()
 
     @JvmField
-    val LEGACY_SKY = DepthPipelineSet.create(
-        "legacy_sky",
-        NO_DEPTH_WRITE,
-        LEGACY_SKY_SNIPPET
-    )
+    val LEGACY_SKY = RenderPipeline.builder(LEGACY_SKY_SNIPPET)
+        .withLocation(location("pipeline/legacy_sky"))
+        .withDepthStencilState(NO_DEPTH_WRITE)
+        .build()
 
     @JvmField
-    val LEGACY_SKY_PLANAR = DepthPipelineSet.create(
-        "legacy_sky_planar",
-        NO_DEPTH_WRITE,
-        RenderPipeline.builder(LEGACY_SKY_SNIPPET)
-            .withShaderDefine("PLANAR_FOG")
-            .buildSnippet()
-    )
+    val LEGACY_SKY_PLANAR = RenderPipeline.builder(LEGACY_SKY_SNIPPET)
+        .withLocation(location("pipeline/legacy_sky_planar"))
+        .withDepthStencilState(NO_DEPTH_WRITE)
+        .withShaderDefine("PLANAR_FOG")
+        .build()
 
     @JvmStatic
-    fun getSkySet(planar: Boolean) = if (planar)
+    fun getSkyPipeline(planar: Boolean) = if (planar)
         LEGACY_SKY_PLANAR
     else
         LEGACY_SKY
@@ -172,16 +163,14 @@ object AnimatiumPipelines {
 
     // Color Boost
     @JvmField
-    val COLOR_BOOST_BLIT: RenderPipeline = precompiled(
-        RenderPipeline.builder()
-            .withLocation(location("pipeline/colorboost"))
-            .withVertexShader("core/screentriangle")
-            .withFragmentShader(location("core/colorboost"))
-            .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
-            .withColorTargetState(ColorTargetState.DEFAULT)
-            .withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
-            .build()
-    )
+    val COLOR_BOOST_BLIT: RenderPipeline = RenderPipeline.builder()
+        .withLocation(location("pipeline/colorboost"))
+        .withVertexShader("core/screentriangle")
+        .withFragmentShader(location("core/colorboost"))
+        .withBindGroupLayout(BindGroupLayouts.SAMPLER0)
+        .withColorTargetState(ColorTargetState.DEFAULT)
+        .withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
+        .build()
 
     // Lighting
     @JvmField
@@ -190,16 +179,14 @@ object AnimatiumPipelines {
         .build()
 
     @JvmField
-    val LEGACY_LIGHTMAP: RenderPipeline = precompiled(
-        RenderPipeline.builder()
-            .withLocation(location("pipeline/legacy_lightmap"))
-            .withVertexShader("core/screentriangle")
-            .withFragmentShader(location("core/legacy_lightmap"))
-            .withBindGroupLayout(LEGACY_LIGHTMAP_INFO)
-            .withColorTargetState(ColorTargetState.DEFAULT)
-            .withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
-            .build()
-    )
+    val LEGACY_LIGHTMAP: RenderPipeline = RenderPipeline.builder()
+        .withLocation(location("pipeline/legacy_lightmap"))
+        .withVertexShader("core/screentriangle")
+        .withFragmentShader(location("core/legacy_lightmap"))
+        .withBindGroupLayout(LEGACY_LIGHTMAP_INFO)
+        .withColorTargetState(ColorTargetState.DEFAULT)
+        .withPrimitiveTopology(PrimitiveTopology.TRIANGLES)
+        .build()
 
     // Glint
     @JvmField
@@ -217,8 +204,6 @@ object AnimatiumPipelines {
         .withBindGroupLayout(BindGroupLayouts.SAMPLER1)
         .withVertexFormat(POSITION_TEX_OVERLAY)
         .build()
-
-    fun precompiled(pipeline: RenderPipeline) = pipeline // TODO
 
     fun bootstrap() {
         IrisUtil.assignPipeline(ARMOR_GLINT, IrisPipeline.ARMOR_GLINT)

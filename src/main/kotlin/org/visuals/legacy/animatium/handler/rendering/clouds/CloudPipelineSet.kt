@@ -15,14 +15,12 @@
 package org.visuals.legacy.animatium.handler.rendering.clouds
 
 import com.mojang.blaze3d.pipeline.RenderPipeline
-import com.mojang.renderpearl.api.GpuFormat
 import com.mojang.renderpearl.api.pipeline.BlendFunction
 import com.mojang.renderpearl.api.pipeline.ColorTargetState
 import net.minecraft.client.CloudStatus
 import org.visuals.legacy.animatium.Animatium.location
 import org.visuals.legacy.animatium.handler.compatibility.IrisPipeline
 import org.visuals.legacy.animatium.handler.compatibility.IrisUtil
-import org.visuals.legacy.animatium.handler.rendering.pipeline.AnimatiumPipelines
 import java.util.*
 
 data class CloudPipelineSet(
@@ -32,31 +30,24 @@ data class CloudPipelineSet(
 ) {
     companion object {
         fun create(name: String, snippet: RenderPipeline.Snippet): CloudPipelineSet {
-            val defaultPipeline = AnimatiumPipelines.precompiled(
-                RenderPipeline.builder(snippet)
-                    .withLocation(location("pipeline/${name}"))
-                    .build()
-            )
+            val defaultPipeline = RenderPipeline.builder(snippet)
+                .withLocation(location("pipeline/${name}"))
+                .build()
 
-            val depthOnlyPipeline = AnimatiumPipelines.precompiled(
-                RenderPipeline.builder(snippet)
-                    .withLocation(location("pipeline/${name}_depth_only"))
-                    .withColorTargetState(
-                        ColorTargetState(
-                            Optional.of(BlendFunction.TRANSLUCENT),
-                            GpuFormat.RGBA8_UNORM,
-                            ColorTargetState.WRITE_NONE
-                        )
+            val depthOnlyPipeline = RenderPipeline.builder(snippet)
+                .withLocation(location("pipeline/${name}_depth_only"))
+                .withColorTargetState(
+                    ColorTargetState(
+                        Optional.of(BlendFunction.TRANSLUCENT),
+                        ColorTargetState.WRITE_NONE
                     )
-                    .build()
-            )
+                )
+                .build()
 
-            val flatPipeline = AnimatiumPipelines.precompiled(
-                RenderPipeline.builder(snippet)
-                    .withLocation(location("pipeline/${name}_flat"))
-                    .withCull(false)
-                    .build()
-            )
+            val flatPipeline = RenderPipeline.builder(snippet)
+                .withLocation(location("pipeline/${name}_flat"))
+                .withCull(false)
+                .build()
 
             IrisUtil.assignPipeline(defaultPipeline, IrisPipeline.CLOUDS)
             IrisUtil.assignPipeline(depthOnlyPipeline, IrisPipeline.CLOUDS)

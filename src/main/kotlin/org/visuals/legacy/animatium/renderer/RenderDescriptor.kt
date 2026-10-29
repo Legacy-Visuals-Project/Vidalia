@@ -19,6 +19,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.renderpearl.api.commands.RenderPass
 import com.mojang.renderpearl.api.commands.RenderPassDescriptor
 import com.mojang.renderpearl.api.textures.GpuTextureView
+import net.minecraft.client.renderer.RenderPassLayouts
 import java.util.function.Supplier
 
 data class RenderDescriptor(
@@ -33,14 +34,15 @@ data class RenderDescriptor(
     }
 
     fun createPass(): RenderPass {
-        val descriptor = RenderPassDescriptor.builder(this.name)
-        descriptor.withColorAttachment(this.colorTexture)
-        if (this.depthTexture != null) {
-            descriptor.withDepthAttachment(this.depthTexture)
+        val hasDepth = this.depthTexture != null
+
+        val descriptor = RenderPassDescriptor.builder(this.name, if (hasDepth) RenderPassLayouts.COLOR_DEPTH else RenderPassLayouts.COLOR_ONLY)
+        descriptor.withAttachment(this.colorTexture)
+        if (hasDepth) {
+            descriptor.withAttachment(this.depthTexture)
         }
 
-        descriptor.withRenderArea(this.area.vanilla())
-        return RenderSystem.getDevice().createCommandEncoder().createRenderPass(descriptor.build())
+        return RenderSystem.getDevice().createCommandEncoder().createRenderPass(descriptor.build(this.area.vanilla()))
     }
 
     data class Area(val x: Int, val y: Int, val width: Int, val height: Int) {

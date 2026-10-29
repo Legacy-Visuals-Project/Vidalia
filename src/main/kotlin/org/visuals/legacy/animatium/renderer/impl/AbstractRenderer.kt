@@ -87,7 +87,7 @@ abstract class AbstractRenderer : AutoCloseable {
         if (geometry.isClosed()) {
             throw RuntimeException("Cannot render, the provided geometry has already been closed!")
         } else {
-            pass.setPipeline(RenderSystem.getCompiledPipeline(pipeline))
+            pass.setPipeline(RenderSystem.getCompiledPipeline(pipeline, pass.activeSubpass()))
 
             val bindGroupLayouts = pipeline.bindGroupLayouts
             val descriptions = BindGroupLayout.flattenUniforms(bindGroupLayouts)

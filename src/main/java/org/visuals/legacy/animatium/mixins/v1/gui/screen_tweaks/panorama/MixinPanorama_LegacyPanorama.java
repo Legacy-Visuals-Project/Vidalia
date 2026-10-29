@@ -16,9 +16,8 @@ package org.visuals.legacy.animatium.mixins.v1.gui.screen_tweaks.panorama;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiPipeline;
 import net.minecraft.client.renderer.Panorama;
 import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,14 +28,14 @@ import org.visuals.legacy.animatium.handler.rendering.panorama.LegacyPanoramaRen
 
 @Mixin(Panorama.class)
 public abstract class MixinPanorama_LegacyPanorama {
-    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIFFIIIIII)V"))
-    private void animatium$legacyPanorama(final GuiGraphicsExtractor instance, final RenderPipeline renderPipeline, final Identifier texture, final int x, final int y, final float u, final float v, final int width, final int height, final int srcWidth, final int srcHeight, final int textureWidth, final int textureHeight, final Operation<Void> original) {
+    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blit(Lnet/minecraft/client/gui/GuiPipeline;Lnet/minecraft/resources/Identifier;IIFFIIIIII)V"))
+    private void animatium$legacyPanorama(final GuiGraphicsExtractor instance, final GuiPipeline guiPipeline, final Identifier texture, final int x, final int y, final float u, final float v, final int width, final int height, final int srcWidth, final int srcHeight, final int textureWidth, final int textureHeight, final Operation<Void> original) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().screen.panoramaRendering) {
-            LegacyPanoramaRenderer.INSTANCE.extractRenderState(instance, width, height, Minecraft.getInstance().getDeltaTracker().getRealtimeDeltaTicks());
+            LegacyPanoramaRenderer.INSTANCE.extractRenderState(instance, width, height, instance.deltaTracker().getRealtimeDeltaTicks());
             instance.fillGradient(0, 0, width, height, -2130706433, 16777215);
             instance.fillGradient(0, 0, width, height, 0, Integer.MIN_VALUE);
         } else {
-            original.call(instance, renderPipeline, texture, x, y, u, v, width, height, srcWidth, srcHeight, textureWidth, textureHeight);
+            original.call(instance, guiPipeline, texture, x, y, u, v, width, height, srcWidth, srcHeight, textureWidth, textureHeight);
         }
     }
 }

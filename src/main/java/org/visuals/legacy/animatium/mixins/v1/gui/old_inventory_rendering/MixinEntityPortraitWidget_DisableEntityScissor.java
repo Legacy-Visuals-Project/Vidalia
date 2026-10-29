@@ -30,7 +30,7 @@ import org.visuals.legacy.animatium.config.AnimatiumConfig;
 
 @Mixin(EntityPortraitWidget.class)
 public abstract class MixinEntityPortraitWidget_DisableEntityScissor {
-    @WrapOperation(method = "extractEntityInInventoryFollowsMouse(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIIFFFFFLnet/minecraft/client/renderer/entity/state/EntityRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;entity(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;FLorg/joml/Vector3fc;Lorg/joml/Quaternionfc;Lorg/joml/Quaternionfc;IIII)V"))
+    @WrapOperation(method = "extractEntityInInventoryFollowsMouse(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIIFFFLnet/minecraft/client/renderer/entity/state/EntityRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;entity(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;FLorg/joml/Vector3fc;Lorg/joml/Quaternionfc;Lorg/joml/Quaternionfc;IIII)V"))
     private static void animatium$disableEntityScissor(final GuiGraphicsExtractor instance, final EntityRenderState renderState, final float scale, final Vector3fc translation, final Quaternionfc rotation, final Quaternionfc overrideCameraAngle, final int x0, final int y0, final int x1, final int y1, final Operation<Void> original) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().other.disableInventoryEntityScissor) {
             final ScreenRectangle bounds = new ScreenRectangle(0, 0, instance.guiWidth(), instance.guiHeight());

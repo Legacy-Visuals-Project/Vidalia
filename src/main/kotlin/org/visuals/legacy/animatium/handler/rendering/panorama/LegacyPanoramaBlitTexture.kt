@@ -18,9 +18,9 @@ import com.mojang.blaze3d.systems.RenderSystem
 import com.mojang.blaze3d.vertex.VertexConsumer
 import com.mojang.renderpearl.api.textures.FilterMode
 import com.mojang.renderpearl.api.textures.GpuTextureView
+import net.minecraft.client.gui.GuiPipeline
 import net.minecraft.client.gui.navigation.ScreenRectangle
 import net.minecraft.client.gui.render.TextureSetup
-import net.minecraft.client.renderer.pipeline.RenderPipelines
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState
 import net.minecraft.util.ARGB
 import org.joml.Matrix3x2f
@@ -54,7 +54,7 @@ class LegacyPanoramaBlitTexture(
             .setColor(color)
     }
 
-    override fun pipeline() = RenderPipelines.GUI_TEXTURED
+    override fun pipeline() = GuiPipeline.TEXTURED
 
     override fun textureSetup() =
         TextureSetup.singleTexture(this.textureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR))
