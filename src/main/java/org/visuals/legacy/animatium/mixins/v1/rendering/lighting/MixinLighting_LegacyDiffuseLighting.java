@@ -14,17 +14,16 @@
 
 package org.visuals.legacy.animatium.mixins.v1.rendering.lighting;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.platform.Lighting;
-import org.joml.Matrix4f;
+import net.minecraft.world.level.CardinalLighting;
 import org.joml.Vector3fc;
-import org.objectweb.asm.Opcodes;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
@@ -32,43 +31,34 @@ import org.visuals.legacy.animatium.handler.rendering.lighting.LegacyDiffuseLigh
 
 @Mixin(Lighting.class)
 public abstract class MixinLighting_LegacyDiffuseLighting {
-    @Shadow
-    @Final
-    private static Vector3fc DIFFUSE_LIGHT_0;
+    @Unique
+    private boolean animatium$recording = true;
 
-    @Shadow
-    @Final
-    private static Vector3fc DIFFUSE_LIGHT_1;
-
-    @Shadow
-    protected abstract void updateBuffer(final Lighting.Entry entry, final Vector3fc light0, final Vector3fc light1);
-
-    // Use old "setupGui3DDiffuseLighting" calculation w/ normal diffuse lighting
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void animatium$legacyDiffuseLighting(final CallbackInfo ci, @Local(name = "item3DPose") final Matrix4f item3DPose) {
-        LegacyDiffuseLighting.setItem3dPose(item3DPose);
-        LegacyDiffuseLighting.setUpdateLightingInvoker((entry, lights) -> this.updateBuffer(entry, lights.light0, lights.light1));
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().other.legacyDiffuseLighting) {
-            LegacyDiffuseLighting.refresh();
+    private void animatium$legacyDiffuseLighting(final CallbackInfo ci) {
+        this.animatium$recording = false;
+
+        LegacyDiffuseLighting.save(); // Save a copy of vanilla lighting data, for use later to restore
+        if (AnimatiumConfig.instance().other.legacyDiffuseLighting) {
+            LegacyDiffuseLighting.apply((Lighting) (Object) this);
         }
     }
 
-    // Use normal light in nether
-    @ModifyExpressionValue(method = "updateLevel", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/platform/Lighting;NETHER_DIFFUSE_LIGHT_0:Lorg/joml/Vector3fc;", opcode = Opcodes.GETSTATIC))
-    private Vector3fc animatium$legacyDiffuseLighting$useDiffuse0Nether(final Vector3fc original) {
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().other.legacyDiffuseLighting) {
-            return DIFFUSE_LIGHT_0;
-        } else {
-            return original;
+    @WrapMethod(method = "updateBuffer")
+    private void animatium$snapshot(final Lighting.Entry entry, final Vector3fc light0, final Vector3fc light1, final Operation<Void> original) {
+        if (this.animatium$recording) {
+            LegacyDiffuseLighting.record(entry, light0, light1);
         }
+
+        original.call(entry, light0, light1);
     }
 
-    @ModifyExpressionValue(method = "updateLevel", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/platform/Lighting;NETHER_DIFFUSE_LIGHT_1:Lorg/joml/Vector3fc;", opcode = Opcodes.GETSTATIC))
-    private Vector3fc animatium$legacyDiffuseLighting$useDiffuse1Nether(final Vector3fc original) {
+    @ModifyVariable(method = "updateLevel", at = @At("HEAD"), name = "type", argsOnly = true)
+    private CardinalLighting.Type animatium$legacyDiffuseLighting$level(final CardinalLighting.Type type) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().other.legacyDiffuseLighting) {
-            return DIFFUSE_LIGHT_1;
+            return CardinalLighting.Type.DEFAULT;
         } else {
-            return original;
+            return type;
         }
     }
 }

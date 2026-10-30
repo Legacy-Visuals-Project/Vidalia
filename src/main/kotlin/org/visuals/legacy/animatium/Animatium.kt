@@ -40,13 +40,20 @@ object Animatium {
         }
 
     @JvmStatic
-    fun isEnabled(): Boolean = enabled
+    fun isEnabled() = enabled
 
     @JvmStatic
     fun reload() {
         val minecraft = Minecraft.getInstance()
         minecraft.levelExtractor.allChanged()
-        LegacyDiffuseLighting.refresh()
+
+        val lighting = minecraft.gameRenderer.lighting()
+        if (AnimatiumConfig.instance().other.legacyDiffuseLighting) {
+            LegacyDiffuseLighting.apply(lighting)
+        } else {
+            LegacyDiffuseLighting.restore(lighting)
+        }
+
         reinitializeInventorySlots()
         ToastUtil.send(Component.literal("Mod reloaded.").withStyle(ChatFormatting.GREEN))
     }

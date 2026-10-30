@@ -15,58 +15,61 @@
 package org.visuals.legacy.animatium.handler.rendering.lighting
 
 import com.mojang.blaze3d.platform.Lighting
+import net.minecraft.util.Mth
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.joml.Vector3fc
-import org.visuals.legacy.animatium.Animatium
-import org.visuals.legacy.animatium.config.AnimatiumConfig
-import java.util.function.BiConsumer
 
 object LegacyDiffuseLighting {
+    private val UI_ENTITY_MATRIX = Matrix4f()
+        .rotateZ(180.0F * Mth.DEG_TO_RAD)
+        .rotateY(135.0F * Mth.DEG_TO_RAD)
+    private val UI_ITEM_MATRIX = Matrix4f()
+        .rotateY(-30.0F * Mth.DEG_TO_RAD)
+        .rotateX(165.0F * Mth.DEG_TO_RAD)
     private val DIFFUSE_LIGHT_0 = (Vector3f(0.2F, 1.0F, -0.7F)).normalize()
     private val DIFFUSE_LIGHT_1 = (Vector3f(-0.2F, 1.0F, 0.7F)).normalize()
 
-    private val INVENTORY_DIFFUSE_LIGHT_0 = (Vector3f(0.2F, -1.0F, 1.0F)).normalize()
-    private val INVENTORY_DIFFUSE_LIGHT_1 = (Vector3f(-0.2F, -1.0F, 0.0F)).normalize()
+    private var map = hashMapOf<Lighting.Entry, LightDirections>()
+    private var snapshot: LightSnapshot? = null
 
     @JvmStatic
-    var item3dPose: Matrix4f? = null
-
-    @JvmStatic
-    var updateLightingInvoker: BiConsumer<Lighting.Entry, Lights>? = null
-
-    @JvmStatic
-    fun refresh() {
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().other.legacyDiffuseLighting) {
-            val lights = Lights(
-                item3dPose!!.transformDirection(DIFFUSE_LIGHT_0, Vector3f()),
-                item3dPose!!.transformDirection(DIFFUSE_LIGHT_1, Vector3f())
-            )
-            updateLightingInvoker!!.accept(Lighting.Entry.ENTITY_IN_UI, lights)
-            updateLightingInvoker!!.accept(Lighting.Entry.PLAYER_SKIN, lights)
-        } else {
-            // Vanilla Values (TODO/NOTE, Possibly a nicer way to do this?)
-            updateLightingInvoker!!.accept(
-                Lighting.Entry.ENTITY_IN_UI,
-                Lights(INVENTORY_DIFFUSE_LIGHT_0, INVENTORY_DIFFUSE_LIGHT_1)
-            )
-
-            val playerSkinPose = Matrix4f()
-            updateLightingInvoker!!.accept(
-                Lighting.Entry.PLAYER_SKIN,
-                Lights(
-                    playerSkinPose.transformDirection(INVENTORY_DIFFUSE_LIGHT_0, Vector3f()),
-                    playerSkinPose.transformDirection(INVENTORY_DIFFUSE_LIGHT_1, Vector3f())
-                )
-            )
+    fun record(entry: Lighting.Entry, light0: Vector3fc, light1: Vector3fc) {
+        if (this.snapshot == null) {
+            this.map[entry] = LightDirections(light0, light1)
         }
     }
 
-    data class Lights(
-        @JvmField
-        val light0: Vector3fc,
+    @JvmStatic
+    fun save() {
+        if (this.snapshot == null) {
+            this.snapshot = LightSnapshot(this.map.toMap())
+            this.map.clear()
+        }
+    }
 
-        @JvmField
-        val light1: Vector3fc
-    )
+    @JvmStatic
+    fun restore(lighting: Lighting) {
+        val snapshot = this.snapshot ?: return
+        for ((entry, directions) in snapshot.entries) {
+            lighting.updateBuffer(entry, directions.light0, directions.light1)
+        }
+    }
+
+    @JvmStatic
+    fun apply(lighting: Lighting) {
+        this.applyLight(lighting, Lighting.Entry.PLAYER_SKIN, UI_ENTITY_MATRIX)
+        this.applyLight(lighting, Lighting.Entry.ENTITY_IN_UI, UI_ENTITY_MATRIX)
+        this.applyLight(lighting, Lighting.Entry.ITEMS_3D, UI_ITEM_MATRIX)
+    }
+
+    private fun applyLight(lighting: Lighting, entry: Lighting.Entry, matrix4f: Matrix4f) {
+        val light0 = matrix4f.transformDirection(DIFFUSE_LIGHT_0, Vector3f())
+        val light1 = matrix4f.transformDirection(DIFFUSE_LIGHT_1, Vector3f())
+        lighting.updateBuffer(entry, light0, light1)
+    }
+
+    data class LightSnapshot(val entries: Map<Lighting.Entry, LightDirections>)
+
+    data class LightDirections(val light0: Vector3fc, val light1: Vector3fc)
 }
