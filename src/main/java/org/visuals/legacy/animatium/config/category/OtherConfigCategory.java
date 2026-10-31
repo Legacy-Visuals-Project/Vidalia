@@ -14,7 +14,6 @@
 
 package org.visuals.legacy.animatium.config.category;
 
-import com.mojang.blaze3d.platform.Lighting;
 import dev.isxander.yacl3.api.ConfigCategory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -114,18 +113,7 @@ public final class OtherConfigCategory extends Category {
                 .booleanEntry("oldWaterOverlayOpacity")
                 .booleanEntry("oldWaterColorFog")
                 .booleanEntry("disableRandomBlockRotations")
-                .booleanEntry("legacyDiffuseLighting", (option, value) -> {
-                    if (option.changed()) {
-                        final Lighting lighting = Minecraft.getInstance().gameRenderer.lighting();
-                        if (value) {
-                            LegacyDiffuseLighting.apply(lighting);
-                        } else {
-                            LegacyDiffuseLighting.restore(lighting);
-                        }
-
-                        Minecraft.getInstance().reloadResourcePacks();
-                    }
-                })
+                .booleanEntry("legacyDiffuseLighting", (option, value) -> LegacyDiffuseLighting.update())
                 .booleanEntry("legacyLightmap")
                 .booleanEntry("legacyFogDarkness")
                 .booleanEntry("legacySplashPosition");
