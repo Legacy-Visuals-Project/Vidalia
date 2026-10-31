@@ -23,3 +23,4 @@ accessible method net/minecraft/client/renderer/CloudRenderer isEastEmpty (J)Z
 
 accessible method net/minecraft/client/multiplayer/ClientLevel getSkyFlashTime ()I
 accessible method com/mojang/blaze3d/platform/Lighting updateBuffer (Lcom/mojang/blaze3d/platform/Lighting$Entry;Lorg/joml/Vector3fc;Lorg/joml/Vector3fc;)V
+accessible method net/minecraft/client/gui/render/GuiRenderer invalidateItemAtlas ()V

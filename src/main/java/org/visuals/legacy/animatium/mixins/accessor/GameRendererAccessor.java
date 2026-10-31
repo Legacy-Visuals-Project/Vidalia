@@ -14,6 +14,7 @@
 
 package org.visuals.legacy.animatium.mixins.accessor;
 
+import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,4 +26,7 @@ public interface GameRendererAccessor {
     @Accessor("overlayTexture")
     @Mutable
     void animatium$setOverlayTexture(final OverlayTexture overlayTexture);
+
+    @Accessor("guiRenderer")
+    GuiRenderer animatium$guiRenderer();
 }

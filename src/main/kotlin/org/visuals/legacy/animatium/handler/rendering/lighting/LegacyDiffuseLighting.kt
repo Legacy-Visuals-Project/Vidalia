@@ -15,10 +15,13 @@
 package org.visuals.legacy.animatium.handler.rendering.lighting
 
 import com.mojang.blaze3d.platform.Lighting
+import net.minecraft.client.Minecraft
 import net.minecraft.util.Mth
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.joml.Vector3fc
+import org.visuals.legacy.animatium.config.AnimatiumConfig
+import org.visuals.legacy.animatium.mixins.accessor.GameRendererAccessor
 
 object LegacyDiffuseLighting {
     private val UI_ENTITY_MATRIX = Matrix4f()
@@ -54,6 +57,18 @@ object LegacyDiffuseLighting {
         for ((entry, directions) in snapshot.entries) {
             lighting.updateBuffer(entry, directions.light0, directions.light1)
         }
+    }
+
+    @JvmStatic
+    fun update() {
+        val lighting = Minecraft.getInstance().gameRenderer.lighting()
+        if (AnimatiumConfig.instance().other.legacyDiffuseLighting) {
+            apply(lighting)
+        } else {
+            restore(lighting)
+        }
+
+        (Minecraft.getInstance().gameRenderer as GameRendererAccessor).`animatium$guiRenderer`().invalidateItemAtlas()
     }
 
     @JvmStatic
