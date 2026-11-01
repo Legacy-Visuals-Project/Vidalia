@@ -22,6 +22,7 @@ import net.minecraft.client.gui.components.debug.DebugScreenEntries
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.Identifier
 import org.visuals.legacy.animatium.config.AnimatiumConfig
+import org.visuals.legacy.animatium.handler.rendering.font.RandomGlyphHelper
 import org.visuals.legacy.animatium.handler.rendering.lighting.LegacyDiffuseLighting
 import org.visuals.legacy.animatium.handler.screen.debug.AnimatiumDebugEntry
 import org.visuals.legacy.animatium.handler.screen.debug.AnimatiumEyeHeightDebugEntry
@@ -47,6 +48,7 @@ object Animatium {
         val minecraft = Minecraft.getInstance()
         minecraft.levelExtractor.allChanged()
         LegacyDiffuseLighting.update(minecraft.gameRenderer.lighting())
+        RandomGlyphHelper.reload()
         reinitializeInventorySlots()
         ToastUtil.send(Component.literal("Mod reloaded.").withStyle(ChatFormatting.GREEN))
     }

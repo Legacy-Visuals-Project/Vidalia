@@ -19,8 +19,10 @@ import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
 import org.visuals.legacy.animatium.handler.config.bundle.EntryBundle;
 import org.visuals.legacy.animatium.handler.config.category.Category;
+import org.visuals.legacy.animatium.handler.rendering.font.RandomGlyphHelper;
 import org.visuals.legacy.animatium.util.UtilsKt;
 import org.visuals.legacy.animatium.util.enums.CameraVersionSetting;
+import org.visuals.legacy.animatium.util.enums.TextObfuscationSetting;
 
 public final class ScreenConfigCategory extends Category {
     public CameraVersionSetting cameraVersion = CameraVersionSetting.VANILLA;
@@ -43,6 +45,7 @@ public final class ScreenConfigCategory extends Category {
     public boolean oldCrosshairPosition = false;
     public boolean disconnectServerToTitleScreen = false;
     public boolean oldCraftingSlotsPosition = false;
+    public TextObfuscationSetting textObfuscation = TextObfuscationSetting.VANILLA;
 
     public static ConfigCategory create(final ScreenConfigCategory defaults, final ScreenConfigCategory config) {
         final ConfigCategory.Builder category = ConfigCategory.createBuilder();
@@ -75,6 +78,7 @@ public final class ScreenConfigCategory extends Category {
         bundle.booleanEntry("oldCrosshairPosition");
         bundle.booleanEntry("disconnectServerToTitleScreen");
         bundle.booleanEntry("oldCraftingSlotsPosition", (option, event) -> UtilsKt.reinitializeInventorySlots());
+        bundle.enumEntry("textObfuscation", TextObfuscationSetting.class, (option, event) -> RandomGlyphHelper.reload());
 
         return bundle;
     }
