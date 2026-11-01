@@ -12,7 +12,7 @@
  * https://polyformproject.org/licenses/shield/1.0.0
  */
 
-package org.visuals.legacy.animatium.mixins.v1.gui.screen_tweaks;
+package org.visuals.legacy.animatium.mixins.v1.gui.screen_tweaks.font;
 
 import com.moulberry.mixinconstraints.annotations.IfModAbsent;
 import net.minecraft.client.gui.Font;

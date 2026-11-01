@@ -40,6 +40,7 @@ enum class PresetVersion(private val applier: Runnable) {
         movement.offsetHurtTiltTime = true
 
         val screen = AnimatiumConfig.instance().screen
+        screen.cameraVersion = CameraVersionSetting.V1_8
         screen.crosshairInThirdPerson = true
         screen.disableHeartFlash = true
         screen.centerScrollableListWidgets = true
@@ -58,7 +59,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.oldChatPosition = true
         screen.oldCrosshairPosition = true
         screen.disconnectServerToTitleScreen = true
-        screen.cameraVersion = CameraVersionSetting.V1_8
+        screen.textObfuscation = TextObfuscationSetting.V1_12_2
 
         val items = AnimatiumConfig.instance().items
         items.thinFishingRodLineThickness = false
@@ -139,6 +140,7 @@ enum class PresetVersion(private val applier: Runnable) {
         movement.offsetHurtTiltTime = false
 
         val screen = AnimatiumConfig.instance().screen
+        screen.cameraVersion = CameraVersionSetting.V1_8
         screen.crosshairInThirdPerson = true
         screen.disableHeartFlash = false
         screen.centerScrollableListWidgets = false
@@ -157,7 +159,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.oldChatPosition = true
         screen.oldCrosshairPosition = true
         screen.disconnectServerToTitleScreen = false
-        screen.cameraVersion = CameraVersionSetting.V1_8
+        screen.textObfuscation = TextObfuscationSetting.V1_12_2
 
         val items = AnimatiumConfig.instance().items
         items.thinFishingRodLineThickness = false
@@ -238,6 +240,7 @@ enum class PresetVersion(private val applier: Runnable) {
         movement.offsetHurtTiltTime = false
 
         val screen = AnimatiumConfig.instance().screen
+        screen.cameraVersion = CameraVersionSetting.VANILLA
         screen.crosshairInThirdPerson = false
         screen.disableHeartFlash = false
         screen.centerScrollableListWidgets = false
@@ -256,7 +259,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.oldChatPosition = false
         screen.oldCrosshairPosition = false
         screen.disconnectServerToTitleScreen = false
-        screen.cameraVersion = CameraVersionSetting.VANILLA
+        screen.textObfuscation = TextObfuscationSetting.VANILLA
 
         val items = AnimatiumConfig.instance().items
         items.thinFishingRodLineThickness = false
