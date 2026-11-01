@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.visuals.legacy.animatium.handler.rendering.font.RandomGlyphHelper;
+import org.visuals.legacy.animatium.handler.rendering.font.character_sets.CharacterSet;
 
 import java.util.function.IntFunction;
 
@@ -36,19 +37,29 @@ public abstract class MixinFontSet_LegacyObfuscation {
 
     @Inject(method = "resetTextures", at = @At("TAIL"))
     private void animatium$clearGlyphs(final CallbackInfo ci) {
-        RandomGlyphHelper.activeSet().reset();
+        final CharacterSet activeSet = RandomGlyphHelper.activeSet();
+        if (activeSet != null) {
+            activeSet.reset();
+        }
     }
 
     @ModifyExpressionValue(method = "getGlyph", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/font/FontSet;glyphGetter:Ljava/util/function/IntFunction;", opcode = Opcodes.GETFIELD))
-    private IntFunction<FontSet.SelectedGlyphs> animatium$populateGlyphs(final IntFunction<FontSet.SelectedGlyphs> original) {
+    private IntFunction<FontSet.SelectedGlyphs> animatium$populateGlyphs(final IntFunction<FontSet.SelectedGlyphs> glyphGetter) {
+        final CharacterSet activeSet = RandomGlyphHelper.activeSet();
         if (RandomGlyphHelper.requestedReload()) {
-            RandomGlyphHelper.activeSet().reset();
+            if (activeSet != null) {
+                activeSet.reset();
+            }
+
             this.glyphCache.clear();
         }
 
         return codepoint -> {
-            RandomGlyphHelper.activeSet().populate(original, codepoint);
-            return original.apply(codepoint);
+            if (activeSet != null) {
+                activeSet.populate(glyphGetter, codepoint);
+            }
+
+            return glyphGetter.apply(codepoint);
         };
     }
 }
