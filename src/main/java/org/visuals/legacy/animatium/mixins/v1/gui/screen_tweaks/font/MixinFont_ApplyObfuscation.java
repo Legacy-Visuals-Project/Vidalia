@@ -30,6 +30,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
 import org.visuals.legacy.animatium.handler.rendering.font.RandomGlyphHelper;
+import org.visuals.legacy.animatium.handler.rendering.font.character_sets.CharacterSet;
 import org.visuals.legacy.animatium.util.enums.TextObfuscationSetting;
 
 import java.util.Objects;
@@ -45,8 +46,9 @@ public abstract class MixinFont_ApplyObfuscation {
 
     @WrapOperation(method = "getGlyph", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GlyphSource;getRandomGlyph(Lnet/minecraft/util/RandomSource;I)Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;"))
     private BakedGlyph animatium$applyTextObfuscation(final GlyphSource instance, final RandomSource random, final int targetWidth, final Operation<BakedGlyph> original, @Local(name = "glyph") final BakedGlyph glyph, @Local(name = "codepoint", argsOnly = true) final int codepoint) {
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().screen.textObfuscation != TextObfuscationSetting.VANILLA) {
-            return Objects.requireNonNullElse(RandomGlyphHelper.activeSet().pick(glyph, random, codepoint), FontSet.INVISIBLE_MISSING_GLYPH);
+        final CharacterSet activeSet = RandomGlyphHelper.activeSet();
+        if (Animatium.isEnabled() && activeSet != null) {
+            return Objects.requireNonNullElse(activeSet.pick(glyph, random, codepoint), FontSet.INVISIBLE_MISSING_GLYPH);
         } else {
             return original.call(instance, random, targetWidth);
         }
