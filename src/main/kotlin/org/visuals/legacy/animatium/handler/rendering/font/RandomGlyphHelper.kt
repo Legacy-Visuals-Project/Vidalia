@@ -14,13 +14,31 @@
 
 package org.visuals.legacy.animatium.handler.rendering.font
 
+import net.minecraft.client.gui.font.FontSet
+import net.minecraft.client.gui.font.glyphs.BakedGlyph
+import net.minecraft.util.RandomSource
 import org.visuals.legacy.animatium.config.AnimatiumConfig
 import org.visuals.legacy.animatium.handler.rendering.font.character_sets.CharacterSet
 import org.visuals.legacy.animatium.handler.rendering.font.character_sets.CharacterSet1_12
 import org.visuals.legacy.animatium.handler.rendering.font.character_sets.CharacterSet1_13
 import org.visuals.legacy.animatium.util.enums.TextObfuscationSetting
+import java.util.function.IntFunction
 
 object RandomGlyphHelper {
+    private object FALLBACK : CharacterSet() {
+        override fun populate(glyphGetter: IntFunction<FontSet.SelectedGlyphs>, codepoint: Int) {
+        }
+
+        override fun reset() {
+        }
+
+        override fun pick(
+            original: BakedGlyph,
+            random: RandomSource,
+            codepoint: Int
+        ) = original
+    }
+
     private val charset1_12 = CharacterSet1_12()
     private val charset1_13 = CharacterSet1_13()
     private var requestedReload = false
@@ -31,13 +49,10 @@ object RandomGlyphHelper {
     }
 
     @JvmStatic
-    fun activeSet(): CharacterSet {
-        val obfuscationSetting = AnimatiumConfig.instance().screen.textObfuscation
-        return when (obfuscationSetting) {
-            TextObfuscationSetting.V1_12_2 -> this.charset1_12
-            TextObfuscationSetting.V1_13 -> this.charset1_13
-            else -> throw RuntimeException("unsupported")
-        }
+    fun activeSet() = when (AnimatiumConfig.instance().screen.textObfuscation) {
+        TextObfuscationSetting.V1_12_2 -> this.charset1_12
+        TextObfuscationSetting.V1_13 -> this.charset1_13
+        else -> FALLBACK
     }
 
     @JvmStatic
