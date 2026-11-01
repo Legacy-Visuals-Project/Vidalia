@@ -134,6 +134,7 @@
 		"v1.rendering.items.usage.MixinFishingRodCast",
 		"v1.rendering.items.usage.MixinIsUsingItem",
 		"v1.rendering.items.usage.MixinMinecraft_EquipUseLogic",
+		"v1.rendering.lighting.MixinFirstPersonHandsAndItemsRenderer_HandLighting",
 		"v1.rendering.lighting.MixinLighting_LegacyDiffuseLighting",
 		"v1.rendering.lighting.MixinLightmap_LegacyLightmap",
 		"v1.rendering.lighting.MixinLightmapRenderState_StoreLegacy",
