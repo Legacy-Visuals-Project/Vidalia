@@ -14,38 +14,18 @@
 
 package org.visuals.legacy.animatium.handler.rendering.font.character_sets
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap
-import net.minecraft.client.gui.font.FontSet
+import com.mojang.blaze3d.font.GlyphInfo
 import net.minecraft.client.gui.font.glyphs.BakedGlyph
-import net.minecraft.util.Mth
 import net.minecraft.util.RandomSource
 import net.minecraft.util.Util
-import java.util.function.IntFunction
 
 class CharacterSet1_13 : CharacterSet() {
-    private val glyphsByWidth = Int2ObjectArrayMap<List<BakedGlyph>>()
+    override fun decide(info: GlyphInfo, glyphs: List<BakedGlyph>, random: RandomSource) =
+        glyphs[((Util.getMillis() % 100L).toInt() + info.hashCode()) % glyphs.size]
 
-    override fun populate(glyphGetter: IntFunction<FontSet.SelectedGlyphs>, codepoint: Int) {
-        val glyph = glyphGetter.apply(codepoint).any.get()
-        val key = Mth.floor(glyph.info().advance)
-        (this.glyphsByWidth.computeIfAbsent(key) { arrayListOf() } as MutableList<BakedGlyph>).add(glyph)
-    }
-
-    override fun reset() {
-        this.glyphsByWidth.clear()
-    }
-
-    override fun pick(original: BakedGlyph, random: RandomSource, codepoint: Int): BakedGlyph? {
-        if (codepoint != 32) {
-            val info = original.info()
-            val glyphs = this.glyphsByWidth.get(Mth.floor(info.advance))
-            return if (glyphs != null && glyphs.isNotEmpty()) {
-                glyphs[((Util.getMillis() % 100L).toInt() + info.hashCode()) % glyphs.size]
-            } else {
-                null
-            }
-        } else {
-            return original
-        }
+    override fun pick(original: BakedGlyph, random: RandomSource, codepoint: Int) = if (codepoint != 32) {
+        super.pick(original, random, codepoint)
+    } else {
+        original
     }
 }

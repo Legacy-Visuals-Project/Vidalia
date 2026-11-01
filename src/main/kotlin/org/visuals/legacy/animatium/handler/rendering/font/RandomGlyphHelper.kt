@@ -22,6 +22,7 @@ import org.visuals.legacy.animatium.util.enums.TextObfuscationSetting
 object RandomGlyphHelper {
     private val charset1_12 = CharacterSet1_12()
     private val charset1_13 = CharacterSet1_13()
+
     private var requestedReload = false
 
     @JvmStatic
