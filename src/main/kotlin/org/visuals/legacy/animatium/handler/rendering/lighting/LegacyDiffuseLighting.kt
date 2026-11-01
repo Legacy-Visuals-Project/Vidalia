@@ -30,8 +30,8 @@ object LegacyDiffuseLighting {
     private val UI_ITEM_MATRIX = Matrix4f()
         .rotateY(-30.0F * Mth.DEG_TO_RAD)
         .rotateX(165.0F * Mth.DEG_TO_RAD)
-    private val DIFFUSE_LIGHT_0 = (Vector3f(0.2F, 1.0F, -0.7F)).normalize()
-    private val DIFFUSE_LIGHT_1 = (Vector3f(-0.2F, 1.0F, 0.7F)).normalize()
+    private val DIFFUSE_LIGHT_0 = Vector3f(0.2F, 1.0F, -0.7F).normalize()
+    private val DIFFUSE_LIGHT_1 = Vector3f(-0.2F, 1.0F, 0.7F).normalize()
 
     private var map = hashMapOf<Lighting.Entry, LightDirections>()
     private var snapshot: LightSnapshot? = null
@@ -52,33 +52,28 @@ object LegacyDiffuseLighting {
     }
 
     @JvmStatic
-    fun restore(lighting: Lighting) {
-        val snapshot = this.snapshot ?: return
-        for ((entry, directions) in snapshot.entries) {
-            lighting.updateBuffer(entry, directions.light0, directions.light1)
-        }
-    }
-
-    @JvmStatic
-    fun update() {
-        val lighting = Minecraft.getInstance().gameRenderer.lighting()
+    fun update(lighting: Lighting) {
         if (AnimatiumConfig.instance().other.legacyDiffuseLighting) {
-            apply(lighting)
+            this.updateDiffuse(lighting, Lighting.Entry.PLAYER_SKIN, UI_ENTITY_MATRIX)
+            this.updateDiffuse(lighting, Lighting.Entry.ENTITY_IN_UI, UI_ENTITY_MATRIX)
+            this.updateDiffuse(lighting, Lighting.Entry.ITEMS_3D, UI_ITEM_MATRIX)
         } else {
-            restore(lighting)
+            val snapshot =
+                this.snapshot ?: throw RuntimeException("Failed to restore diffuse lighting values, please report this to the mod developer if you see this!")
+            for ((entry, directions) in snapshot.entries) {
+                lighting.updateBuffer(entry, directions.light0, directions.light1)
+            }
         }
 
-        (Minecraft.getInstance().gameRenderer as GameRendererAccessor).`animatium$guiRenderer`().invalidateItemAtlas()
+        val gameRenderer =
+            Minecraft.getInstance().gameRenderer ?: return // Intelli-J is wrong, it is nullable per-java standards and on game launch Lighting::new
+        if (gameRenderer is GameRendererAccessor) {
+            gameRenderer.`animatium$guiRenderer`().invalidateItemAtlas()
+        }
     }
 
     @JvmStatic
-    fun apply(lighting: Lighting) {
-        this.applyLight(lighting, Lighting.Entry.PLAYER_SKIN, UI_ENTITY_MATRIX)
-        this.applyLight(lighting, Lighting.Entry.ENTITY_IN_UI, UI_ENTITY_MATRIX)
-        this.applyLight(lighting, Lighting.Entry.ITEMS_3D, UI_ITEM_MATRIX)
-    }
-
-    private fun applyLight(lighting: Lighting, entry: Lighting.Entry, matrix4f: Matrix4f) {
+    fun updateDiffuse(lighting: Lighting, entry: Lighting.Entry, matrix4f: Matrix4f) {
         val light0 = matrix4f.transformDirection(DIFFUSE_LIGHT_0, Vector3f())
         val light1 = matrix4f.transformDirection(DIFFUSE_LIGHT_1, Vector3f())
         lighting.updateBuffer(entry, light0, light1)

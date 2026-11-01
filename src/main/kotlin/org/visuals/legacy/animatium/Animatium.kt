@@ -48,7 +48,7 @@ object Animatium {
     fun reload() {
         val minecraft = Minecraft.getInstance()
         minecraft.levelExtractor.allChanged()
-        LegacyDiffuseLighting.update()
+        LegacyDiffuseLighting.update(minecraft.gameRenderer.lighting())
         reinitializeInventorySlots()
         ToastUtil.send(Component.literal("Mod reloaded.").withStyle(ChatFormatting.GREEN))
     }

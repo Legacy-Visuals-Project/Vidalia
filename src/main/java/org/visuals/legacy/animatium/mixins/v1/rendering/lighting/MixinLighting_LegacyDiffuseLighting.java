@@ -40,7 +40,7 @@ public abstract class MixinLighting_LegacyDiffuseLighting {
 
         LegacyDiffuseLighting.save(); // Save a copy of vanilla lighting data, for use later to restore
         if (AnimatiumConfig.instance().other.legacyDiffuseLighting) {
-            LegacyDiffuseLighting.apply((Lighting) (Object) this);
+            LegacyDiffuseLighting.update((Lighting) (Object) this);
         }
     }
 

@@ -113,7 +113,7 @@ public final class OtherConfigCategory extends Category {
                 .booleanEntry("oldWaterOverlayOpacity")
                 .booleanEntry("oldWaterColorFog")
                 .booleanEntry("disableRandomBlockRotations")
-                .booleanEntry("legacyDiffuseLighting", (option, value) -> LegacyDiffuseLighting.update())
+                .booleanEntry("legacyDiffuseLighting", (option, value) -> LegacyDiffuseLighting.update(Minecraft.getInstance().gameRenderer.lighting()))
                 .booleanEntry("legacyLightmap")
                 .booleanEntry("legacyFogDarkness")
                 .booleanEntry("legacySplashPosition");
