@@ -59,6 +59,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.oldChatPosition = true
         screen.oldCrosshairPosition = true
         screen.disconnectServerToTitleScreen = true
+        screen.legacyNameTagRendering = true
         screen.textObfuscation = TextObfuscationSetting.V1_12_2
 
         val items = AnimatiumConfig.instance().items
@@ -159,6 +160,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.oldChatPosition = true
         screen.oldCrosshairPosition = true
         screen.disconnectServerToTitleScreen = false
+        screen.legacyNameTagRendering = true
         screen.textObfuscation = TextObfuscationSetting.V1_12_2
 
         val items = AnimatiumConfig.instance().items
@@ -259,6 +261,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.oldChatPosition = false
         screen.oldCrosshairPosition = false
         screen.disconnectServerToTitleScreen = false
+        screen.legacyNameTagRendering = false
         screen.textObfuscation = TextObfuscationSetting.VANILLA
 
         val items = AnimatiumConfig.instance().items
