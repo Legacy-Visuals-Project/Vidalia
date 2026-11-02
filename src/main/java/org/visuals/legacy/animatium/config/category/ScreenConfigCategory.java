@@ -45,6 +45,7 @@ public final class ScreenConfigCategory extends Category {
     public boolean oldCrosshairPosition = false;
     public boolean disconnectServerToTitleScreen = false;
     public boolean oldCraftingSlotsPosition = false;
+    public boolean legacyNameTagRendering = false;
     public TextObfuscationSetting textObfuscation = TextObfuscationSetting.VANILLA;
 
     public static ConfigCategory create(final ScreenConfigCategory defaults, final ScreenConfigCategory config) {
@@ -78,6 +79,7 @@ public final class ScreenConfigCategory extends Category {
         bundle.booleanEntry("oldCrosshairPosition");
         bundle.booleanEntry("disconnectServerToTitleScreen");
         bundle.booleanEntry("oldCraftingSlotsPosition", (option, event) -> UtilsKt.reinitializeInventorySlots());
+        bundle.booleanEntry("legacyNameTagRendering");
         bundle.enumEntry("textObfuscation", TextObfuscationSetting.class, (option, event) -> RandomGlyphHelper.reload());
 
         return bundle;
