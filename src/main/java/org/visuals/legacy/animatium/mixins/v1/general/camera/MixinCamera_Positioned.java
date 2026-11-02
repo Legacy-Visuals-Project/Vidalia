@@ -37,22 +37,16 @@ public abstract class MixinCamera_Positioned {
     @Shadow
     protected abstract void move(final float forwards, final float up, final float right);
 
+    // TODO: Fix bed/sleeping position
+
     @Inject(method = "alignWithEntity", at = @At(value = "TAIL"))
     private void animatium$cameraVersion(final float partialTicks, final CallbackInfo ci) {
-        // TODO: Fix bed/sleeping position
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().screen.cameraVersion != CameraVersionSetting.VANILLA && !this.detached && !(this.entity instanceof LivingEntity && ((LivingEntity) this.entity).isSleeping())) {
-            final int ordinal = AnimatiumConfig.instance().screen.cameraVersion.ordinal();
-            if (ordinal <= CameraVersionSetting.V1_14_TO_V1_14_3.ordinal()) {
-                // <= 1.14.3
-                this.move(-0.05000000074505806F, 0.0F, 0.0F);
-                // <= 1.13.2
-                if (ordinal <= CameraVersionSetting.V1_9_TO_V1_13_2.ordinal()) {
-                    this.move(0.1F, 0.0F, 0.0F);
-                    // <= 1.8
-                    if (ordinal == CameraVersionSetting.V1_8.ordinal()) {
-                        this.move(-0.15F, 0, 0); // unfixing parallax
-                    }
-                }
+        final CameraVersionSetting cameraVersion = AnimatiumConfig.instance().screen.cameraVersion;
+        if (Animatium.isEnabled() && cameraVersion != CameraVersionSetting.VANILLA && !this.detached && !(this.entity instanceof final LivingEntity livingEntity && livingEntity.isSleeping())) {
+            if (cameraVersion == CameraVersionSetting.V1_8) {
+                this.move(0.1F, 0.0F, 0.0F);
+            } else if (cameraVersion == CameraVersionSetting.V1_9_TO_V1_14_3) {
+                this.move(-0.05F, 0.0F, 0.0F);
             }
         }
     }
