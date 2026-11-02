@@ -44,8 +44,10 @@ public abstract class MixinCamera_Positioned {
         final CameraVersionSetting cameraVersion = AnimatiumConfig.instance().screen.cameraVersion;
         if (Animatium.isEnabled() && cameraVersion != CameraVersionSetting.VANILLA && !this.detached && !(this.entity instanceof final LivingEntity livingEntity && livingEntity.isSleeping())) {
             if (cameraVersion == CameraVersionSetting.V1_8) {
-                this.move(0.1F, 0.0F, 0.0F);
-            } else if (cameraVersion == CameraVersionSetting.V1_9_TO_V1_14_3) {
+                this.move(-0.1F, 0.0F, 0.0F);
+            } else if (cameraVersion == CameraVersionSetting.V1_9_TO_V1_13_2) {
+                this.move(0.05F, 0.0F, 0.0F);
+            } else if (cameraVersion == CameraVersionSetting.V1_14_TO_V1_14_3) {
                 this.move(-0.05F, 0.0F, 0.0F);
             }
         }
