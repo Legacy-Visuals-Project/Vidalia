@@ -56,7 +56,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.fullWidthInventoryEffects = true
         screen.panoramaRendering = true
         screen.legacyLoadingScreen = true
-        screen.oldChatPosition = true
+        screen.legacyChatRendering = true
         screen.oldCrosshairPosition = true
         screen.disconnectServerToTitleScreen = true
         screen.legacyNameTagRendering = true
@@ -157,7 +157,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.fullWidthInventoryEffects = true
         screen.panoramaRendering = true
         screen.legacyLoadingScreen = true
-        screen.oldChatPosition = true
+        screen.legacyChatRendering = true
         screen.oldCrosshairPosition = true
         screen.disconnectServerToTitleScreen = false
         screen.legacyNameTagRendering = true
@@ -258,7 +258,7 @@ enum class PresetVersion(private val applier: Runnable) {
         screen.fullWidthInventoryEffects = false
         screen.panoramaRendering = false
         screen.legacyLoadingScreen = false
-        screen.oldChatPosition = false
+        screen.legacyChatRendering = false
         screen.oldCrosshairPosition = false
         screen.disconnectServerToTitleScreen = false
         screen.legacyNameTagRendering = false
