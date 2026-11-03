@@ -14,36 +14,26 @@
 
 package org.visuals.legacy.animatium.mixins.v1.gui.screen_tweaks.font;
 
-import com.moulberry.mixinconstraints.annotations.IfModAbsent;
 import net.minecraft.client.gui.Font;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Constant;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.visuals.legacy.animatium.Animatium;
 import org.visuals.legacy.animatium.config.AnimatiumConfig;
 
-@IfModAbsent(value = "viafabricplus")
+/**
+ * This changed in 1.13 pre6 due to a (int -> float) change
+ * The calculation was (? + fontHeight / 2) where the 2 changed to 2.0F so (9 / 2.0F = 4.5) instead of 4 due to casting.
+ * For note, fontheight is 9
+ */
 @Mixin(Font.PreparedTextBuilder.class)
 public abstract class MixinFontPreparedTextBuilder_FixStrikethroughStyle {
-    @Unique
-    private static final float animatium$strikethroughOffset = 0.5F;
-
-    @ModifyArg(method = "accept(ILnet/minecraft/network/chat/Style;Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/font/glyphs/EffectGlyph;createEffect(FFFFFIIF)Lnet/minecraft/client/gui/font/TextRenderable;", ordinal = 0), index = 1)
-    private float animatium$fixTextStrikethroughStyle$minY(final float minY) {
+    @ModifyConstant(method = "accept(ILnet/minecraft/network/chat/Style;Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;)Z", constant = @Constant(floatValue = 4.5F))
+    private float animatium$fixTextStrikethroughStyle(final float original) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().fixes.fixTextStrikethroughStyle) {
-            return minY - animatium$strikethroughOffset;
+            return 4.0F;
         } else {
-            return minY;
-        }
-    }
-
-    @ModifyArg(method = "accept(ILnet/minecraft/network/chat/Style;Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/font/glyphs/EffectGlyph;createEffect(FFFFFIIF)Lnet/minecraft/client/gui/font/TextRenderable;", ordinal = 0), index = 3)
-    private float animatium$fixTextStrikethroughStyle$maxY(final float maxY) {
-        if (Animatium.isEnabled() && AnimatiumConfig.instance().fixes.fixTextStrikethroughStyle) {
-            return maxY - animatium$strikethroughOffset;
-        } else {
-            return maxY;
+            return original;
         }
     }
 }
