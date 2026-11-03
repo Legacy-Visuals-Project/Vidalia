@@ -17,7 +17,6 @@ package org.visuals.legacy.animatium.config.category;
 import dev.isxander.yacl3.api.ConfigCategory;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.NonNull;
-import org.visuals.legacy.animatium.handler.compatibility.ModsKt;
 import org.visuals.legacy.animatium.handler.config.bundle.EntryBundle;
 import org.visuals.legacy.animatium.handler.config.category.Category;
 
@@ -53,10 +52,7 @@ public final class FixesConfigCategory extends Category {
         bundle.booleanEntry("fixCastLineCheck");
         bundle.booleanEntry("fixCastLineSwing");
         bundle.booleanEntry("fixFireballClientsideVisual");
-        if (!ModsKt.HAS_VFP) {
-            bundle.booleanEntry("fixTextStrikethroughStyle");
-        }
-
+        bundle.booleanEntry("fixTextStrikethroughStyle");
         bundle.booleanEntry("fixHighAttackSpeedIndicator");
         bundle.booleanEntry("fixVerticalBobbingTilt");
         bundle.booleanEntry("upMinPixelTransparencyLimit");
