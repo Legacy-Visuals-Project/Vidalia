@@ -15,7 +15,9 @@
 package org.visuals.legacy.animatium.mixins.v1.gui.screen_tweaks.font;
 
 import net.minecraft.client.gui.Font;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.visuals.legacy.animatium.Animatium;
@@ -28,10 +30,14 @@ import org.visuals.legacy.animatium.config.AnimatiumConfig;
  */
 @Mixin(Font.PreparedTextBuilder.class)
 public abstract class MixinFontPreparedTextBuilder_FixStrikethroughStyle {
+    @Shadow
+    @Final
+    Font this$0;
+
     @ModifyConstant(method = "accept(ILnet/minecraft/network/chat/Style;Lnet/minecraft/client/gui/font/glyphs/BakedGlyph;)Z", constant = @Constant(floatValue = 4.5F))
     private float animatium$fixTextStrikethroughStyle(final float original) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().fixes.fixTextStrikethroughStyle) {
-            return 4.0F;
+            return (float) (this.this$0.lineHeight / 2);
         } else {
             return original;
         }
