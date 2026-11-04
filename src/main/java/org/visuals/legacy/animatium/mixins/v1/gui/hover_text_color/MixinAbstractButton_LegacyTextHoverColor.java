@@ -34,7 +34,7 @@ public abstract class MixinAbstractButton_LegacyTextHoverColor extends AbstractW
     private Component animatium$renderWidget$old$textColor(final AbstractButton instance, final Operation<Component> original) {
         final Component component = original.call(instance);
         if (Animatium.isEnabled() && AnimatiumConfig.instance().screen.legacyWidgetHoverTextColor) {
-            return component.copy().withColor(!this.active ? 0xA0A0A0 : (this.isHoveredOrFocused() ? 0xFFFFA0 : 0xE0E0E0));
+            return component.copy().withColor(!this.active ? 0xA0A0A0 : (this.isHighlighted() ? 0xFFFFA0 : 0xE0E0E0));
         } else {
             return component;
         }

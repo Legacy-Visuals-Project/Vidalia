@@ -29,8 +29,8 @@ import org.visuals.legacy.animatium.config.AnimatiumConfig;
 
 @Mixin(ClientLevel.class)
 public abstract class MixinClientLevel_DontTickSkyBrightness extends Level {
-    protected MixinClientLevel_DontTickSkyBrightness(final WritableLevelData levelData, final ResourceKey<Level> dimension, final RegistryAccess registryAccess, final Holder<DimensionType> dimensionTypeRegistration, final boolean isClientSide, final boolean isDebug, final int maxChainedNeighborUpdates) {
-        super(levelData, dimension, registryAccess, dimensionTypeRegistration, isClientSide, isDebug, maxChainedNeighborUpdates);
+    protected MixinClientLevel_DontTickSkyBrightness(final WritableLevelData levelData, final ResourceKey<Level> dimension, final RegistryAccess registryAccess, final Holder<DimensionType> dimensionTypeRegistration, final boolean isClientSide, final int maxChainedNeighborUpdates) {
+        super(levelData, dimension, registryAccess, dimensionTypeRegistration, isClientSide, maxChainedNeighborUpdates);
     }
 
     // In 1.21.2, they fixed (https://mojira.dev/MC-259651), so this reverts that bug fix
