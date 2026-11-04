@@ -26,7 +26,7 @@ import org.visuals.legacy.animatium.config.AnimatiumConfig;
 /**
  * This changed in 1.13 pre6 due to a (int -> float) change
  * The calculation was (? + fontHeight / 2) where the 2 changed to 2.0F so (9 / 2.0F = 4.5) instead of 4 due to casting.
- * For note, fontheight is 9
+ * For note, fontHeight is 9
  */
 @Mixin(Font.PreparedTextBuilder.class)
 public abstract class MixinFontPreparedTextBuilder_FixStrikethroughStyle {
