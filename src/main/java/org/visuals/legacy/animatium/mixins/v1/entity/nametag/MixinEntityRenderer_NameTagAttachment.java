@@ -18,7 +18,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,13 +32,13 @@ public abstract class MixinEntityRenderer_NameTagAttachment<T extends Entity, S 
     private Vec3 animatium$changeNameTagAttachment(final Vec3 original, @Local(argsOnly = true, name = "state") final S state) {
         if (Animatium.isEnabled() && AnimatiumConfig.instance().screen.legacyNameTagRendering) {
             float yOffset = state.boundingBoxHeight;
-            if (AnimatiumConfig.instance().movement.fakeOldSneakEyeHeight) {
+            if (AnimatiumConfig.instance().movement.fakeOldSneakEyeHeight && state instanceof final HumanoidRenderState humanoidRenderState) {
                 yOffset = 1.8F;
-                if (state.isDiscrete) {
+                if (humanoidRenderState.isCrouching) {
                     yOffset -= 0.25F;
                 }
 
-                yOffset *= state instanceof final LivingEntityRenderState livingEntityRenderState ? livingEntityRenderState.scale : 1.0F;
+                yOffset *= humanoidRenderState.scale;
             }
 
             return new Vec3(0.0D, yOffset, 0.0D);
