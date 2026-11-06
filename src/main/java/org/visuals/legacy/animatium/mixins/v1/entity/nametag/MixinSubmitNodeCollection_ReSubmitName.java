@@ -14,7 +14,8 @@
 
 package org.visuals.legacy.animatium.mixins.v1.entity.nametag;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.SubmitNodeCollection;
 import net.minecraft.client.renderer.feature.TextFeatureRenderer;
@@ -41,10 +42,13 @@ public abstract class MixinSubmitNodeCollection_ReSubmitName {
     @Unique
     private TextFeatureRenderer.Submit animatium$cachedNameSubmit;
 
-    @ModifyExpressionValue(method = "submitNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollection;nameTag(Lorg/joml/Matrix4f;FFLnet/minecraft/util/FormattedCharSequence;IIILnet/minecraft/client/gui/Font$DisplayMode;)Lnet/minecraft/client/renderer/feature/TextFeatureRenderer$Submit;", ordinal = 0))
-    private TextFeatureRenderer.Submit animatium$cacheNameSubmit(final TextFeatureRenderer.Submit original) {
-        this.animatium$cachedNameSubmit = original;
-        return original;
+    @WrapOperation(method = "submitNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollection;submitNameTagPart(Lnet/minecraft/client/renderer/feature/TextFeatureRenderer$Submit;)V", ordinal = 0))
+    private void animatium$cacheNameSubmit(final SubmitNodeCollection instance, final TextFeatureRenderer.Submit submit, final Operation<Void> original) {
+        if (Animatium.isEnabled() && AnimatiumConfig.instance().screen.legacyNameTagRendering) {
+            this.animatium$cachedNameSubmit = submit;
+        } else {
+            original.call(instance, submit);
+        }
     }
 
     @Inject(method = "submitNameTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/phase/TranslucentFeatureRenderPhase;submit(Lnet/minecraft/client/renderer/feature/submit/TranslucentSubmit;)V", shift = At.Shift.AFTER))
